@@ -1,0 +1,206 @@
+'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageCircle, X, Send, Zap } from 'lucide-react';
+import { ChatMessage } from '@/types';
+
+const MIN_LEN = 2;
+const MAX_LEN = 500;
+const SEND_COOLDOWN_MS = 800;
+
+const FAQ_RESPONSES: Record<string, string> = {
+  pricing: "Our Surron bikes range from $3,799 (Light Bee S) to $13,499 (Storm Bee RS). Parts start at $39 and go up to $899 for upgraded batteries. Check out /shop for full pricing!",
+  bikes: "We carry 5 Surron models: Light Bee X ($4,299), Light Bee S ($3,799 - street legal), Ultra Bee ($8,499), Storm Bee ($11,999), and the upcoming Storm Bee RS ($13,499 - pre-order). Each one's a beast!",
+  battery: "Looking to upgrade your battery? Our 60V 40Ah upgraded battery ($899) gives you 18% more capacity than stock. Plug-and-play installation, no mods needed. We also have 10A fast chargers ($179) that cut charge time in half.",
+  speed: "Top speeds: Light Bee X hits 47 mph, Ultra Bee reaches 59 mph, and the Storm Bee maxes out at 75 mph. The upcoming Storm Bee RS is estimated at 85+ mph!",
+  range: "Range varies by model: Light Bee X gets 40-60 miles, Ultra Bee gets 50-75 miles, and Storm Bee gets 60-80 miles per charge. Real-world range depends on terrain and riding style.",
+  shipping: "Free shipping on all orders over $500! Bikes ship fully assembled via freight carrier. Parts and accessories ship via USPS/UPS, typically arriving in 3-7 business days.",
+  warranty: "All Surron bikes come with a 1-year manufacturer warranty on frame and motor, 6 months on battery. Aftermarket parts have a 1-year VANDAL warranty.",
+  parts: "We stock batteries, controllers, suspension upgrades, handguards, LED headlights, chain kits, and more. All parts are plug-and-play compatible with Surron models.",
+  street: "The Light Bee S ($3,799) is our street-legal model — comes with DOT lighting, mirrors, and turn signals. The LBX can be made street legal in some states with aftermarket DOT kits.",
+  controller: "Our Performance Controller ($449) upgrades your Light Bee's power delivery with sine-wave FOC, 100A continuous current, Bluetooth tuning, and 3 programmable ride modes.",
+};
+
+export default function ChatWidget() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      text: "Hey! 👋 I'm the VANDAL AI Advisor. Ask me anything about Surron electric bikes, parts, specs, or orders.",
+      isBot: true,
+      timestamp: new Date(),
+    },
+  ]);
+  const [inputValue, setInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [lastSentAt, setLastSentAt] = useState(0);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      const t = setTimeout(() => inputRef.current?.focus(), 50);
+      return () => clearTimeout(t);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const getBotResponse = (userMessage: string): string => {
+    const msg = userMessage.toLowerCase();
+    if (msg.includes('price') || msg.includes('cost') || msg.includes('how much')) return FAQ_RESPONSES.pricing;
+    if (msg.includes('bike') || msg.includes('model') || msg.includes('which')) return FAQ_RESPONSES.bikes;
+    if (msg.includes('battery') || msg.includes('charge') || msg.includes('power')) return FAQ_RESPONSES.battery;
+    if (msg.includes('speed') || msg.includes('fast') || msg.includes('top')) return FAQ_RESPONSES.speed;
+    if (msg.includes('range') || msg.includes('far') || msg.includes('mile')) return FAQ_RESPONSES.range;
+    if (msg.includes('ship') || msg.includes('deliver')) return FAQ_RESPONSES.shipping;
+    if (msg.includes('warranty') || msg.includes('guarantee') || msg.includes('return')) return FAQ_RESPONSES.warranty;
+    if (msg.includes('part') || msg.includes('upgrade') || msg.includes('accessori')) return FAQ_RESPONSES.parts;
+    if (msg.includes('street') || msg.includes('legal') || msg.includes('road')) return FAQ_RESPONSES.street;
+    if (msg.includes('controller') || msg.includes('performance')) return FAQ_RESPONSES.controller;
+    if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) return "Hey there! Welcome to VANDAL. Looking for a Surron bike, parts, or gear? I can help with specs, pricing, and recommendations.";
+    return "Great question! I can help with:\n\n• Bike models & specs\n• Pricing & comparisons\n• Parts & upgrades\n• Shipping & warranty\n• Street legality\n\nTry asking about a specific model like the \"Light Bee X\" or \"Storm Bee\", or ask about battery upgrades, top speed, or range.";
+  };
+
+  const handleSendMessage = async () => {
+    const trimmed = inputValue.trim();
+    if (trimmed.length < MIN_LEN || trimmed.length > MAX_LEN) return;
+    if (!/[a-zA-Z0-9]/.test(trimmed)) return;
+    const now = Date.now();
+    if (now - lastSentAt < SEND_COOLDOWN_MS) return;
+    setLastSentAt(now);
+
+    const userMessage: ChatMessage = { id: Date.now().toString(), text: trimmed, isBot: false, timestamp: new Date() };
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    inputRef.current?.focus();
+    setIsTyping(true);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: trimmed }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), text: data.reply, isBot: true, timestamp: new Date() }]);
+      } else {
+        throw new Error('API error');
+      }
+    } catch {
+      await new Promise(r => setTimeout(r, 600 + Math.random() * 800));
+      setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), text: getBotResponse(trimmed), isBot: true, timestamp: new Date() }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  return (
+    <>
+      {/* Chat Toggle — Refined circle */}
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white/[0.06] border border-white/[0.08] backdrop-blur-xl flex items-center justify-center hover:bg-white/[0.1] hover:border-white/[0.15] transition-all cursor-pointer"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 2, type: 'spring' }}
+        aria-label="Toggle chat"
+      >
+        {isOpen ? <X className="w-4.5 h-4.5 text-white/60" /> : <MessageCircle className="w-4.5 h-4.5 text-white/60" />}
+      </motion.button>
+
+      {/* Chat Panel */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 100, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 100, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed bottom-24 right-6 z-50 w-[min(380px,calc(100vw-48px))] h-[min(500px,70vh)] rounded-2xl overflow-hidden border border-white/[0.06] shadow-2xl flex flex-col bg-[#080808]"
+          >
+            {/* Header */}
+            <div className="bg-[#0D0D0D] border-b border-white/[0.04] px-5 py-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <Zap className="w-3.5 h-3.5 text-white/50" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xs font-semibold text-white tracking-wider uppercase">VANDAL AI</h3>
+                <p className="text-[10px] text-white/25">{isTyping ? 'Typing...' : 'Online'}</p>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="p-1.5 rounded-lg hover:bg-white/[0.04] transition-colors">
+                <X className="w-4 h-4 text-white/20" />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-black">
+              {messages.map((msg) => (
+                <div key={msg.id} className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}>
+                  <div className={`max-w-[80%] px-4 py-2.5 text-sm leading-relaxed ${
+                    msg.isBot
+                      ? 'bg-white/[0.03] text-white/60 rounded-2xl rounded-bl-md border border-white/[0.04]'
+                      : 'bg-white text-black rounded-2xl rounded-br-md'
+                  }`}>
+                    <p className="whitespace-pre-line break-words">{msg.text}</p>
+                  </div>
+                </div>
+              ))}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-white/[0.03] px-4 py-3 rounded-2xl rounded-bl-md border border-white/[0.04]">
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce [animation-delay:0ms]" />
+                      <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce [animation-delay:150ms]" />
+                      <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce [animation-delay:300ms]" />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="px-4 py-2 bg-black border-t border-white/[0.04] flex gap-2 overflow-x-auto">
+              {['Bikes', 'Parts', 'Pricing'].map((action) => (
+                <button key={action} onClick={() => { setInputValue(action); }}
+                  className="shrink-0 px-3 py-1.5 text-[10px] text-white/30 border border-white/[0.06] rounded-full hover:bg-white/[0.04] hover:text-white/50 transition-colors uppercase tracking-wider">
+                  {action}
+                </button>
+              ))}
+            </div>
+
+            {/* Input */}
+            <div className="bg-[#0D0D0D] border-t border-white/[0.04] px-4 py-3 flex items-center gap-2">
+              <input
+                ref={inputRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask about Surron..."
+                maxLength={MAX_LEN}
+                className="flex-1 bg-white/[0.02] border border-white/[0.04] rounded-full px-4 py-2.5 text-sm text-white placeholder:text-white/15 focus:outline-none focus:border-white/[0.1] transition-colors"
+              />
+              <button onClick={handleSendMessage}
+                className="p-2.5 rounded-full bg-white text-black hover:bg-white/90 transition-colors disabled:opacity-30"
+                disabled={inputValue.trim().length < MIN_LEN}>
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
