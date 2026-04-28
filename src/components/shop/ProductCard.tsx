@@ -28,7 +28,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       transition={{ duration: 0.5, delay: index * 0.08 }}
       className="group relative"
     >
-      <div className="relative rounded-2xl overflow-hidden bg-white/[0.01] border border-white/[0.04] transition-all duration-500 hover:border-white/[0.1] hover:bg-white/[0.02]">
+      <div
+        className="relative rounded-2xl overflow-hidden transition-all duration-500"
+        style={{
+          backgroundColor: 'var(--v-bg-card)',
+          border: '1px solid var(--v-border)',
+        }}
+      >
         {/* Image Container */}
         <div
           onClick={() => router.push(productUrl)}
@@ -37,10 +43,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           tabIndex={0}
           onKeyDown={(e) => e.key === 'Enter' && router.push(productUrl)}
         >
-          <div className="relative aspect-[4/3] bg-gradient-to-b from-[#0D0D0D] to-[#080808] overflow-hidden">
+          <div className="relative aspect-[4/3] overflow-hidden" style={{ background: 'linear-gradient(to bottom, var(--v-bg-elevated), var(--v-bg-surface))' }}>
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-white/[0.02] flex items-center justify-center">
-                <Package className="w-10 h-10 text-white/[0.06]" />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--v-bg-card)' }}>
+                <Package className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: 'var(--v-text-dim)' }} />
               </div>
             </div>
 
@@ -76,20 +82,20 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         </div>
 
         {/* Product Info */}
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           <Link href={productUrl}>
-            <p className="text-[10px] text-white/25 uppercase tracking-[0.15em] mb-1">
+            <p className="text-[10px] uppercase tracking-[0.15em] mb-1" style={{ color: 'var(--v-text-dim)' }}>
               {product.category === 'bikes' ? 'Electric Bikes' : product.category === 'parts' ? 'Parts' : 'Accessories'}
             </p>
-            <h3 className="text-sm font-medium text-white/80 group-hover:text-white transition-colors duration-300 line-clamp-1">
+            <h3 className="text-sm font-medium transition-colors duration-300 line-clamp-1" style={{ color: 'var(--v-text-secondary)' }}>
               {product.name}
             </h3>
           </Link>
 
           <div className="flex items-center gap-2 mt-2.5">
-            <span className="text-base font-mono font-bold text-white">{formatPrice(product.price)}</span>
+            <span className="text-sm sm:text-base font-mono font-bold" style={{ color: 'var(--v-text)' }}>{formatPrice(product.price)}</span>
             {isOnSale && product.compare_price && (
-              <span className="text-xs font-mono text-white/20 line-through">{formatPrice(product.compare_price)}</span>
+              <span className="text-xs font-mono line-through" style={{ color: 'var(--v-text-dim)' }}>{formatPrice(product.compare_price)}</span>
             )}
           </div>
 
@@ -97,7 +103,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <div className={`w-1 h-1 rounded-full ${
               isOutOfStock ? 'bg-red-500/60' : product.stock_qty < 5 ? 'bg-amber-400/60' : 'bg-emerald-400/40'
             }`} />
-            <span className="text-[10px] text-white/25">
+            <span className="text-[10px]" style={{ color: 'var(--v-text-dim)' }}>
               {isOutOfStock ? 'Pre-order' : product.stock_qty < 5 ? `${product.stock_qty} left` : 'In stock'}
             </span>
           </div>

@@ -2,7 +2,7 @@ import { ReactNode, ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: 'primary' | 'outline' | 'ghost' | 'accent';
+  variant?: 'primary' | 'outline' | 'ghost' | 'accent' | 'glassy';
   size?: 'sm' | 'md' | 'lg';
   glow?: boolean;
 }
@@ -29,6 +29,7 @@ export function Button({
     outline: 'btn-outline',
     ghost: 'btn-ghost',
     accent: 'bg-[#00D4FF] text-[#000000] font-semibold rounded-full hover:bg-[#00BFEA] hover:-translate-y-0.5',
+    glassy: 'glassy-3d text-white font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-px',
   };
 
   const glowClass = glow && variant === 'accent' ? 'shadow-[0_0_30px_rgba(0,212,255,0.25)]' : '';

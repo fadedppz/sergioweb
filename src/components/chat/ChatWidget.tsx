@@ -85,14 +85,23 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: trimmed }),
       });
+
       if (res.ok) {
         const data = await res.json();
-        setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), text: data.reply, isBot: true, timestamp: new Date() }]);
+
+        // If API returned a fallback flag, use local FAQ instead
+        if (data.fallback) {
+          const localResponse = getBotResponse(trimmed);
+          setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), text: localResponse, isBot: true, timestamp: new Date() }]);
+        } else {
+          setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), text: data.reply, isBot: true, timestamp: new Date() }]);
+        }
       } else {
         throw new Error('API error');
       }
     } catch {
-      await new Promise(r => setTimeout(r, 600 + Math.random() * 800));
+      // Network error — use local FAQ
+      await new Promise(r => setTimeout(r, 400 + Math.random() * 400));
       setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), text: getBotResponse(trimmed), isBot: true, timestamp: new Date() }]);
     } finally {
       setIsTyping(false);
@@ -108,16 +117,22 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Chat Toggle — Refined circle */}
+      {/* Chat Toggle */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white/[0.06] border border-white/[0.08] backdrop-blur-xl flex items-center justify-center hover:bg-white/[0.1] hover:border-white/[0.15] transition-all cursor-pointer"
+        className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full backdrop-blur-xl flex items-center justify-center transition-all cursor-pointer"
+        style={{
+          backgroundColor: 'var(--v-glass)',
+          border: '1px solid var(--v-border)',
+        }}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 2, type: 'spring' }}
         aria-label="Toggle chat"
       >
-        {isOpen ? <X className="w-4.5 h-4.5 text-white/60" /> : <MessageCircle className="w-4.5 h-4.5 text-white/60" />}
+        {isOpen
+          ? <X className="w-4 h-4" style={{ color: 'var(--v-text-muted)' }} />
+          : <MessageCircle className="w-4 h-4" style={{ color: 'var(--v-text-muted)' }} />}
       </motion.button>
 
       {/* Chat Panel */}
@@ -128,42 +143,56 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 100, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-24 right-6 z-50 w-[min(380px,calc(100vw-48px))] h-[min(500px,70vh)] rounded-2xl overflow-hidden border border-white/[0.06] shadow-2xl flex flex-col bg-[#080808]"
+            className="fixed bottom-24 right-4 sm:right-6 z-50 w-[min(380px,calc(100vw-32px))] h-[min(500px,70vh)] rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+            style={{
+              backgroundColor: 'var(--v-bg-surface)',
+              border: '1px solid var(--v-border)',
+            }}
           >
             {/* Header */}
-            <div className="bg-[#0D0D0D] border-b border-white/[0.04] px-5 py-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center">
-                <Zap className="w-3.5 h-3.5 text-white/50" />
+            <div className="px-5 py-4 flex items-center gap-3" style={{ backgroundColor: 'var(--v-bg-elevated)', borderBottom: '1px solid var(--v-border)' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--v-bg-card)' }}>
+                <Zap className="w-3.5 h-3.5" style={{ color: 'var(--v-text-muted)' }} />
               </div>
               <div className="flex-1">
-                <h3 className="text-xs font-semibold text-white tracking-wider uppercase">VANDAL AI</h3>
-                <p className="text-[10px] text-white/25">{isTyping ? 'Typing...' : 'Online'}</p>
+                <h3 className="text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--v-text)' }}>VANDAL AI</h3>
+                <p className="text-[10px]" style={{ color: 'var(--v-text-dim)' }}>{isTyping ? 'Typing...' : 'Online'}</p>
               </div>
-              <button onClick={() => setIsOpen(false)} className="p-1.5 rounded-lg hover:bg-white/[0.04] transition-colors">
-                <X className="w-4 h-4 text-white/20" />
+              <button onClick={() => setIsOpen(false)} className="p-1.5 rounded-lg transition-colors" style={{ color: 'var(--v-text-dim)' }}>
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-black">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: 'var(--v-bg)' }}>
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.isBot ? 'justify-start' : 'justify-end'}`}>
-                  <div className={`max-w-[80%] px-4 py-2.5 text-sm leading-relaxed ${
-                    msg.isBot
-                      ? 'bg-white/[0.03] text-white/60 rounded-2xl rounded-bl-md border border-white/[0.04]'
-                      : 'bg-white text-black rounded-2xl rounded-br-md'
-                  }`}>
+                  <div
+                    className={`max-w-[80%] px-4 py-2.5 text-sm leading-relaxed ${
+                      msg.isBot
+                        ? 'rounded-2xl rounded-bl-md'
+                        : 'rounded-2xl rounded-br-md'
+                    }`}
+                    style={msg.isBot ? {
+                      backgroundColor: 'var(--v-bg-card)',
+                      color: 'var(--v-text-secondary)',
+                      border: '1px solid var(--v-border)',
+                    } : {
+                      backgroundColor: 'var(--v-btn-primary-bg)',
+                      color: 'var(--v-btn-primary-text)',
+                    }}
+                  >
                     <p className="whitespace-pre-line break-words">{msg.text}</p>
                   </div>
                 </div>
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white/[0.03] px-4 py-3 rounded-2xl rounded-bl-md border border-white/[0.04]">
+                  <div className="px-4 py-3 rounded-2xl rounded-bl-md" style={{ backgroundColor: 'var(--v-bg-card)', border: '1px solid var(--v-border)' }}>
                     <div className="flex gap-1">
-                      <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce [animation-delay:0ms]" />
-                      <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce [animation-delay:150ms]" />
-                      <span className="w-1.5 h-1.5 bg-white/20 rounded-full animate-bounce [animation-delay:300ms]" />
+                      <span className="w-1.5 h-1.5 rounded-full animate-bounce [animation-delay:0ms]" style={{ backgroundColor: 'var(--v-text-dim)' }} />
+                      <span className="w-1.5 h-1.5 rounded-full animate-bounce [animation-delay:150ms]" style={{ backgroundColor: 'var(--v-text-dim)' }} />
+                      <span className="w-1.5 h-1.5 rounded-full animate-bounce [animation-delay:300ms]" style={{ backgroundColor: 'var(--v-text-dim)' }} />
                     </div>
                   </div>
                 </div>
@@ -172,17 +201,18 @@ export default function ChatWidget() {
             </div>
 
             {/* Quick Actions */}
-            <div className="px-4 py-2 bg-black border-t border-white/[0.04] flex gap-2 overflow-x-auto">
+            <div className="px-4 py-2 flex gap-2 overflow-x-auto" style={{ backgroundColor: 'var(--v-bg)', borderTop: '1px solid var(--v-border)' }}>
               {['Bikes', 'Parts', 'Pricing'].map((action) => (
                 <button key={action} onClick={() => { setInputValue(action); }}
-                  className="shrink-0 px-3 py-1.5 text-[10px] text-white/30 border border-white/[0.06] rounded-full hover:bg-white/[0.04] hover:text-white/50 transition-colors uppercase tracking-wider">
+                  className="shrink-0 px-3 py-1.5 text-[10px] rounded-full uppercase tracking-wider transition-colors"
+                  style={{ color: 'var(--v-text-muted)', border: '1px solid var(--v-border)' }}>
                   {action}
                 </button>
               ))}
             </div>
 
             {/* Input */}
-            <div className="bg-[#0D0D0D] border-t border-white/[0.04] px-4 py-3 flex items-center gap-2">
+            <div className="px-4 py-3 flex items-center gap-2" style={{ backgroundColor: 'var(--v-bg-elevated)', borderTop: '1px solid var(--v-border)' }}>
               <input
                 ref={inputRef}
                 value={inputValue}
@@ -190,10 +220,16 @@ export default function ChatWidget() {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about Surron..."
                 maxLength={MAX_LEN}
-                className="flex-1 bg-white/[0.02] border border-white/[0.04] rounded-full px-4 py-2.5 text-sm text-white placeholder:text-white/15 focus:outline-none focus:border-white/[0.1] transition-colors"
+                className="flex-1 rounded-full px-4 py-2.5 text-sm focus:outline-none transition-colors"
+                style={{
+                  backgroundColor: 'var(--v-input-bg)',
+                  border: '1px solid var(--v-border)',
+                  color: 'var(--v-text)',
+                }}
               />
               <button onClick={handleSendMessage}
-                className="p-2.5 rounded-full bg-white text-black hover:bg-white/90 transition-colors disabled:opacity-30"
+                className="p-2.5 rounded-full transition-colors disabled:opacity-30"
+                style={{ backgroundColor: 'var(--v-btn-primary-bg)', color: 'var(--v-btn-primary-text)' }}
                 disabled={inputValue.trim().length < MIN_LEN}>
                 <Send className="w-3.5 h-3.5" />
               </button>

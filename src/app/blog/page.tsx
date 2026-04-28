@@ -50,40 +50,46 @@ const blogPosts = [
 
 export default function BlogPage() {
   return (
-    <div className="pt-[72px] min-h-screen">
+    <div className="pt-[72px] min-h-screen" style={{ backgroundColor: 'var(--v-bg)' }}>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-          <span className="text-xs uppercase tracking-[0.2em] text-[#00D4FF] font-medium">Blog</span>
-          <h1 className="text-4xl sm:text-5xl font-bold text-[#F5F5F5] mt-2 mb-4">The VANDAL Journal</h1>
-          <p className="text-[#888888] max-w-lg">Guides, reviews, comparisons, and news from the electric motorcycle world.</p>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
+            <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Insights</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl leading-tight mb-4">
+            <span className="font-serif-italic gradient-text">The VANDAL</span>{' '}
+            <span className="font-bold" style={{ color: 'var(--v-text)' }}>Journal</span>
+          </h1>
+          <p className="text-sm max-w-lg" style={{ color: 'var(--v-text-secondary)' }}>Guides, reviews, comparisons, and news from the electric motorcycle world.</p>
         </motion.div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {blogPosts.map((post, idx) => (
             <motion.div key={post.slug}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.08 }}>
               <Link href={`/blog/${post.slug}`}>
-                <GlassCard className="p-6 sm:p-8 group cursor-pointer">
+                <GlassCard className="p-5 sm:p-8 group cursor-pointer">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-xs font-medium text-[#7B2FFF] uppercase tracking-wider">{post.category}</span>
-                        <span className="text-xs text-[#555555]">•</span>
-                        <span className="text-xs text-[#888888] flex items-center gap-1">
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                        <span className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--v-accent)' }}>{post.category}</span>
+                        <span className="text-xs" style={{ color: 'var(--v-text-dim)' }}>•</span>
+                        <span className="text-xs flex items-center gap-1" style={{ color: 'var(--v-text-muted)' }}>
                           <Calendar className="w-3 h-3" />
                           {new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </span>
-                        <span className="text-xs text-[#555555]">•</span>
-                        <span className="text-xs text-[#888888]">{post.readTime}</span>
+                        <span className="text-xs" style={{ color: 'var(--v-text-dim)' }}>•</span>
+                        <span className="text-xs" style={{ color: 'var(--v-text-muted)' }}>{post.readTime}</span>
                       </div>
-                      <h2 className="text-lg sm:text-xl font-semibold text-[#F5F5F5] group-hover:text-[#00D4FF] transition-colors mb-2">
+                      <h2 className="text-base sm:text-lg font-semibold transition-colors mb-2" style={{ color: 'var(--v-text)' }}>
                         {post.title}
                       </h2>
-                      <p className="text-sm text-[#888888] line-clamp-2">{post.excerpt}</p>
+                      <p className="text-sm line-clamp-2" style={{ color: 'var(--v-text-muted)' }}>{post.excerpt}</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-[#555555] group-hover:text-[#00D4FF] transition-colors shrink-0" />
+                    <ArrowRight className="w-5 h-5 shrink-0 transition-colors" style={{ color: 'var(--v-text-dim)' }} />
                   </div>
                 </GlassCard>
               </Link>

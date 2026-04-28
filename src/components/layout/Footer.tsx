@@ -25,14 +25,14 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-white/[0.04]">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+    <footer className="relative" style={{ borderTop: '1px solid var(--v-border)' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-20">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
           {/* Brand */}
-          <div className="lg:col-span-1">
-            <h3 className="text-lg font-bold tracking-[0.15em] text-white mb-1">VANDAL</h3>
-            <span className="text-[10px] text-white/20 tracking-wider">®</span>
-            <p className="text-sm text-white/30 mt-4 leading-relaxed max-w-xs">
+          <div className="col-span-2 sm:col-span-2 lg:col-span-1">
+            <h3 className="text-lg font-bold tracking-[0.15em] mb-1" style={{ color: 'var(--v-text)' }}>VANDAL</h3>
+            <span className="text-[10px] tracking-wider" style={{ color: 'var(--v-text-dim)' }}>®</span>
+            <p className="text-sm mt-4 leading-relaxed max-w-xs" style={{ color: 'var(--v-text-muted)' }}>
               Premium Surron electric motorcycles and performance parts. The future of off-road.
             </p>
           </div>
@@ -40,13 +40,19 @@ export function Footer() {
           {/* Link Columns */}
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h4 className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium mb-6">{title}</h4>
-              <ul className="space-y-3">
+              <h4
+                className="text-[10px] uppercase tracking-[0.3em] font-medium mb-4 sm:mb-6"
+                style={{ color: 'var(--v-text-muted)' }}
+              >
+                {title}
+              </h4>
+              <ul className="space-y-2.5 sm:space-y-3">
                 {links.map((link) => (
                   <li key={link.href + link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/40 hover:text-white transition-colors duration-300"
+                      className="text-sm transition-colors duration-300 hover:opacity-80"
+                      style={{ color: 'var(--v-text-secondary)' }}
                     >
                       {link.label}
                     </Link>
@@ -58,11 +64,14 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-20 pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/20">© 2025 VANDAL. All rights reserved.</p>
+        <div
+          className="mt-16 sm:mt-20 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
+          style={{ borderTop: '1px solid var(--v-border)' }}
+        >
+          <p className="text-xs" style={{ color: 'var(--v-text-dim)' }}>© 2025 VANDAL. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <Link href="/faq" className="text-xs text-white/20 hover:text-white/50 transition-colors">Privacy</Link>
-            <Link href="/faq" className="text-xs text-white/20 hover:text-white/50 transition-colors">Terms</Link>
+            <Link href="/faq" className="text-xs transition-colors hover:opacity-80" style={{ color: 'var(--v-text-dim)' }}>Privacy</Link>
+            <Link href="/faq" className="text-xs transition-colors hover:opacity-80" style={{ color: 'var(--v-text-dim)' }}>Terms</Link>
           </div>
         </div>
       </div>

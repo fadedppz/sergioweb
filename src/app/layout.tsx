@@ -5,8 +5,10 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/lib/cart-store";
+import { ThemeProvider } from "@/lib/theme-store";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import ChatWidget from "@/components/chat/ChatWidget";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -56,17 +58,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="dark"
       suppressHydrationWarning
       className={`${inter.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-black text-white">
-        <CartProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CartDrawer />
-          <ChatWidget />
-        </CartProvider>
+      <body className="min-h-full flex flex-col transition-colors duration-500">
+        <ThemeProvider>
+          <CartProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <CartDrawer />
+            <ChatWidget />
+            <CustomCursor />
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

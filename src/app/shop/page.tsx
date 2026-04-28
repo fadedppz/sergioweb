@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { SlidersHorizontal, X } from 'lucide-react';
 import { products } from '@/data/products';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { Button } from '@/components/ui/Button';
 
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'newest';
 type CategoryFilter = 'all' | 'bikes' | 'parts' | 'accessories';
@@ -38,40 +39,40 @@ export default function ShopPage() {
   ];
 
   return (
-    <div className="pt-16 min-h-screen">
-      {/* Vignette */}
+    <div className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--v-bg)' }}>
       <div className="vignette-glow" />
 
       {/* Header */}
-      <div className="relative py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+      <div className="relative py-16 sm:py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-px bg-white/10" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Catalog</span>
+              <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
+              <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Catalog</span>
             </div>
-            <h1 className="text-5xl sm:text-6xl leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl leading-tight">
               <span className="font-serif-italic gradient-text">Browse</span>{' '}
-              <span className="font-bold text-white">collection</span>
+              <span className="font-bold" style={{ color: 'var(--v-text)' }}>collection</span>
             </h1>
-            <p className="text-sm text-white/40 mt-4 max-w-md">
+            <p className="text-sm mt-4 max-w-md" style={{ color: 'var(--v-text-muted)' }}>
               Surron electric motorcycles, performance upgrades, and riding accessories.
             </p>
           </motion.div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pb-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pb-24 sm:pb-32">
         {/* Toolbar */}
-        <div className="flex items-center justify-between gap-4 mb-10 flex-wrap">
-          <div className="flex items-center gap-1 p-1 rounded-full border border-white/[0.04] bg-white/[0.01]">
+        <div className="flex items-center justify-between gap-4 mb-8 sm:mb-10 flex-wrap">
+          <div className="flex items-center gap-1 p-1 rounded-full overflow-x-auto" style={{ border: '1px solid var(--v-border)', backgroundColor: 'var(--v-bg-card)' }}>
             {categories.map((cat) => (
               <button key={cat.value} onClick={() => setCategory(cat.value)}
-                className={`px-5 py-2 text-xs rounded-full transition-all duration-300 ${
-                  category === cat.value
-                    ? 'bg-white text-black font-semibold'
-                    : 'text-white/40 hover:text-white/70'
-                }`}>
+                className="px-4 sm:px-5 py-2 text-xs rounded-full transition-all duration-300 shrink-0"
+                style={{
+                  backgroundColor: category === cat.value ? 'var(--v-btn-primary-bg)' : 'transparent',
+                  color: category === cat.value ? 'var(--v-btn-primary-text)' : 'var(--v-text-muted)',
+                  fontWeight: category === cat.value ? 600 : 400,
+                }}>
                 {cat.label}
                 <span className="ml-1.5 text-[9px] opacity-50">{cat.count}</span>
               </button>
@@ -79,40 +80,42 @@ export default function ShopPage() {
           </div>
           <div className="flex items-center gap-3">
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="bg-white/[0.02] border border-white/[0.04] rounded-full px-4 py-2 text-xs text-white/60 focus:outline-none cursor-pointer">
+              className="rounded-full px-4 py-2 text-xs focus:outline-none cursor-pointer"
+              style={{ backgroundColor: 'var(--v-bg-card)', border: '1px solid var(--v-border)', color: 'var(--v-text-secondary)' }}>
               <option value="featured">Featured</option>
               <option value="price-asc">Price ↑</option>
               <option value="price-desc">Price ↓</option>
               <option value="newest">Newest</option>
             </select>
             <button onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs border border-white/[0.04] rounded-full text-white/40 hover:text-white/70 lg:hidden">
+              className="flex items-center gap-1.5 px-4 py-2 text-xs rounded-full lg:hidden"
+              style={{ border: '1px solid var(--v-border)', color: 'var(--v-text-muted)' }}>
               <SlidersHorizontal className="w-3.5 h-3.5" />Filters
             </button>
           </div>
         </div>
 
-        <div className="flex gap-10">
+        <div className="flex gap-8 lg:gap-10">
           {/* Sidebar */}
           <aside className="hidden lg:block w-52 shrink-0">
             <div className="sticky top-24 space-y-8">
               <div>
-                <h4 className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-medium mb-4">Availability</h4>
+                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-4" style={{ color: 'var(--v-text-muted)' }}>Availability</h4>
                 <label className="flex items-center gap-2.5 cursor-pointer group">
                   <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)}
-                    className="w-4 h-4 rounded border-white/20 bg-white/5 accent-white cursor-pointer" />
-                  <span className="text-xs text-white/40 group-hover:text-white/60 transition-colors">In stock only</span>
+                    className="w-4 h-4 rounded cursor-pointer accent-current" />
+                  <span className="text-xs transition-colors" style={{ color: 'var(--v-text-muted)' }}>In stock only</span>
                 </label>
               </div>
               <div>
-                <h4 className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-medium mb-4">Max Price</h4>
+                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-4" style={{ color: 'var(--v-text-muted)' }}>Max Price</h4>
                 <input type="range" min={0} max={15000} step={100} value={maxPrice}
-                  onChange={(e) => setMaxPrice(parseInt(e.target.value))} className="w-full accent-white" />
-                <div className="flex justify-between text-[10px] text-white/20 font-mono mt-2">
+                  onChange={(e) => setMaxPrice(parseInt(e.target.value))} className="w-full" />
+                <div className="flex justify-between text-[10px] font-mono mt-2" style={{ color: 'var(--v-text-dim)' }}>
                   <span>$0</span><span>${maxPrice.toLocaleString()}</span>
                 </div>
               </div>
-              <p className="text-[10px] text-white/15">{filteredProducts.length} products</p>
+              <p className="text-[10px]" style={{ color: 'var(--v-text-dim)' }}>{filteredProducts.length} products</p>
             </div>
           </aside>
 
@@ -120,12 +123,12 @@ export default function ShopPage() {
           <div className="flex-1">
             {filteredProducts.length === 0 ? (
               <div className="text-center py-24">
-                <p className="text-sm text-white/30 mb-2">No products match your filters</p>
+                <p className="text-sm mb-2" style={{ color: 'var(--v-text-muted)' }}>No products match your filters</p>
                 <button onClick={() => { setCategory('all'); setInStockOnly(false); setMaxPrice(15000); }}
-                  className="text-xs text-white/50 hover:text-white underline">Clear filters</button>
+                  className="text-xs underline" style={{ color: 'var(--v-text-secondary)' }}>Clear filters</button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {filteredProducts.map((product, idx) => (
                   <ProductCard key={product.id} product={product} index={idx} />
                 ))}
@@ -138,28 +141,28 @@ export default function ShopPage() {
       {/* Mobile filter drawer */}
       {showFilters && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/80" onClick={() => setShowFilters(false)} />
+          <div className="absolute inset-0" style={{ backgroundColor: 'var(--v-overlay)' }} onClick={() => setShowFilters(false)} />
           <motion.div initial={{ y: '100%' }} animate={{ y: 0 }}
-            className="absolute bottom-0 left-0 right-0 bg-[#080808] border-t border-white/[0.04] rounded-t-3xl p-6">
+            className="absolute bottom-0 left-0 right-0 rounded-t-3xl p-6"
+            style={{ backgroundColor: 'var(--v-bg-surface)', borderTop: '1px solid var(--v-border)' }}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-sm font-semibold text-white tracking-wider uppercase">Filters</h3>
-              <button onClick={() => setShowFilters(false)}><X className="w-5 h-5 text-white/40" /></button>
+              <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--v-text)' }}>Filters</h3>
+              <button onClick={() => setShowFilters(false)}><X className="w-5 h-5" style={{ color: 'var(--v-text-muted)' }} /></button>
             </div>
             <div className="space-y-6">
               <label className="flex items-center gap-2.5">
-                <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)} className="w-4 h-4 accent-white" />
-                <span className="text-xs text-white/40">In stock only</span>
+                <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)} className="w-4 h-4" />
+                <span className="text-xs" style={{ color: 'var(--v-text-muted)' }}>In stock only</span>
               </label>
               <div>
-                <h4 className="text-[10px] uppercase tracking-[0.2em] text-white/30 mb-3">Max Price</h4>
+                <h4 className="text-[10px] uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--v-text-muted)' }}>Max Price</h4>
                 <input type="range" min={0} max={15000} step={100} value={maxPrice}
-                  onChange={(e) => setMaxPrice(parseInt(e.target.value))} className="w-full accent-white" />
-                <p className="text-xs text-white/30 font-mono mt-1">${maxPrice.toLocaleString()}</p>
+                  onChange={(e) => setMaxPrice(parseInt(e.target.value))} className="w-full" />
+                <p className="text-xs font-mono mt-1" style={{ color: 'var(--v-text-muted)' }}>${maxPrice.toLocaleString()}</p>
               </div>
-              <button onClick={() => setShowFilters(false)}
-                className="w-full py-3 bg-white text-black font-semibold rounded-full text-sm">
+              <Button variant="primary" size="lg" className="w-full" onClick={() => setShowFilters(false)}>
                 Show {filteredProducts.length} Results
-              </button>
+              </Button>
             </div>
           </motion.div>
         </motion.div>

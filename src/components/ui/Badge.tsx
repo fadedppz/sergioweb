@@ -7,15 +7,15 @@ interface BadgeProps {
 
 export function Badge({ children, variant = 'default' }: BadgeProps) {
   const variants = {
-    featured: 'bg-white/[0.06] text-white/80 border-white/[0.08]',
-    sale: 'bg-[#00D4FF]/10 text-[#00D4FF] border-[#00D4FF]/20',
-    preorder: 'bg-[#7B2FFF]/10 text-[#7B2FFF] border-[#7B2FFF]/20',
-    default: 'bg-white/[0.04] text-white/60 border-white/[0.06]',
+    featured: 'glassy-3d glassy-3d-featured',
+    sale: 'glassy-3d glassy-3d-sale',
+    preorder: 'glassy-3d glassy-3d-featured', // reuse featured color scheme
+    default: 'glassy-3d text-white/60',
   };
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider rounded-full border ${variants[variant]}`}
+      className={`inline-flex items-center px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider ${variants[variant]}`}
     >
       {children}
     </span>

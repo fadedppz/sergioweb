@@ -22,10 +22,10 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="pt-16 min-h-screen flex items-center justify-center">
+      <div className="pt-16 min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--v-bg)' }}>
         <div className="text-center">
-          <h1 className="text-xl font-bold text-white mb-4">Product Not Found</h1>
-          <Link href="/shop" className="text-sm text-white/40 hover:text-white underline">Back to Shop</Link>
+          <h1 className="text-xl font-bold mb-4" style={{ color: 'var(--v-text)' }}>Product Not Found</h1>
+          <Link href="/shop" className="text-sm underline" style={{ color: 'var(--v-text-muted)' }}>Back to Shop</Link>
         </div>
       </div>
     );
@@ -37,28 +37,29 @@ export default function ProductDetailPage() {
   const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--v-bg)' }}>
       <div className="vignette-glow" />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
         {/* Breadcrumb */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          className="flex items-center gap-2 text-xs text-white/30 mb-10">
-          <Link href="/shop" className="hover:text-white/60 transition-colors flex items-center gap-1">
+          className="flex items-center gap-2 text-xs mb-8 sm:mb-10 flex-wrap" style={{ color: 'var(--v-text-muted)' }}>
+          <Link href="/shop" className="transition-colors flex items-center gap-1" style={{ color: 'var(--v-text-muted)' }}>
             <ArrowLeft className="w-3 h-3" /> Shop
           </Link>
-          <span className="text-white/10">/</span>
+          <span style={{ color: 'var(--v-text-dim)' }}>/</span>
           <span className="capitalize">{product.category}</span>
-          <span className="text-white/10">/</span>
-          <span className="text-white/50">{product.name}</span>
+          <span style={{ color: 'var(--v-text-dim)' }}>/</span>
+          <span style={{ color: 'var(--v-text-secondary)' }}>{product.name}</span>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16">
           {/* Image */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-            <div className="aspect-square bg-gradient-to-b from-[#0D0D0D] to-[#080808] rounded-3xl border border-white/[0.04] flex items-center justify-center relative overflow-hidden">
-              <div className="w-32 h-32 rounded-full bg-white/[0.015] flex items-center justify-center">
-                <Package className="w-16 h-16 text-white/[0.06]" />
+            <div className="aspect-square rounded-3xl flex items-center justify-center relative overflow-hidden"
+              style={{ background: 'linear-gradient(to bottom, var(--v-bg-elevated), var(--v-bg-surface))', border: '1px solid var(--v-border)' }}>
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--v-bg-card)' }}>
+                <Package className="w-12 h-12 sm:w-16 sm:h-16" style={{ color: 'var(--v-text-dim)' }} />
               </div>
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 {product.is_featured && <Badge variant="featured">Featured</Badge>}
@@ -69,38 +70,40 @@ export default function ProductDetailPage() {
 
           {/* Product Info */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-medium mb-3">
+            <p className="text-[10px] uppercase tracking-[0.2em] font-medium mb-3" style={{ color: 'var(--v-text-muted)' }}>
               {product.category === 'bikes' ? 'Electric Bikes' : product.category === 'parts' ? 'Parts' : 'Accessories'}
             </p>
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-5">{product.name}</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-5" style={{ color: 'var(--v-text)' }}>{product.name}</h1>
 
             {/* Price */}
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-3xl font-mono font-bold gradient-text">{formatPrice(currentPrice)}</span>
+            <div className="flex items-center gap-3 mb-6 sm:mb-8">
+              <span className="text-2xl sm:text-3xl font-mono font-bold gradient-text">{formatPrice(currentPrice)}</span>
               {isOnSale && product.compare_price && (
                 <>
-                  <span className="text-base font-mono text-white/20 line-through">{formatPrice(product.compare_price)}</span>
+                  <span className="text-base font-mono line-through" style={{ color: 'var(--v-text-dim)' }}>{formatPrice(product.compare_price)}</span>
                   <Badge variant="sale">−{formatPrice(product.compare_price - product.price)}</Badge>
                 </>
               )}
             </div>
 
-            <p className="text-sm text-white/50 leading-relaxed mb-8">{product.description}</p>
+            <p className="text-sm leading-relaxed mb-6 sm:mb-8" style={{ color: 'var(--v-text-secondary)' }}>{product.description}</p>
 
             {/* Variants */}
             {product.variants && product.variants.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-[10px] uppercase tracking-[0.2em] text-white/30 font-medium mb-3">
+              <div className="mb-6 sm:mb-8">
+                <h3 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-3" style={{ color: 'var(--v-text-muted)' }}>
                   {product.category === 'accessories' ? 'Size' : 'Color'}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {product.variants.map((v) => (
                     <button key={v.id} onClick={() => setSelectedVariant(v)}
-                      className={`px-4 py-2.5 text-xs rounded-full border transition-all duration-200 ${
-                        selectedVariant?.id === v.id
-                          ? 'border-white bg-white text-black font-semibold'
-                          : 'border-white/[0.08] text-white/40 hover:border-white/[0.2]'
-                      }`}>
+                      className="px-4 py-2.5 text-xs rounded-full transition-all duration-200"
+                      style={{
+                        border: selectedVariant?.id === v.id ? '1px solid var(--v-btn-primary-bg)' : '1px solid var(--v-border)',
+                        backgroundColor: selectedVariant?.id === v.id ? 'var(--v-btn-primary-bg)' : 'transparent',
+                        color: selectedVariant?.id === v.id ? 'var(--v-btn-primary-text)' : 'var(--v-text-muted)',
+                        fontWeight: selectedVariant?.id === v.id ? 600 : 400,
+                      }}>
                       {v.label}
                       {v.price_delta > 0 && <span className="ml-1 opacity-50">+{formatPrice(v.price_delta)}</span>}
                     </button>
@@ -110,15 +113,15 @@ export default function ProductDetailPage() {
             )}
 
             {/* Qty + ATC */}
-            <div className="flex items-center gap-4 mb-10">
-              <div className="flex items-center border border-white/[0.06] rounded-full overflow-hidden">
+            <div className="flex items-center gap-3 sm:gap-4 mb-8 sm:mb-10">
+              <div className="flex items-center rounded-full overflow-hidden" style={{ border: '1px solid var(--v-border)' }}>
                 <button onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 py-3 text-sm text-white/40 hover:text-white hover:bg-white/[0.04] transition-colors">−</button>
-                <span className="px-4 py-3 text-sm font-mono text-white min-w-[48px] text-center">{quantity}</span>
+                  className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm transition-colors" style={{ color: 'var(--v-text-muted)' }}>−</button>
+                <span className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm font-mono min-w-[40px] text-center" style={{ color: 'var(--v-text)' }}>{quantity}</span>
                 <button onClick={() => setQuantity(quantity + 1)}
-                  className="px-4 py-3 text-sm text-white/40 hover:text-white hover:bg-white/[0.04] transition-colors">+</button>
+                  className="px-3 sm:px-4 py-2.5 sm:py-3 text-sm transition-colors" style={{ color: 'var(--v-text-muted)' }}>+</button>
               </div>
-              <Button variant="primary" size="lg" onClick={() => addItem(product, selectedVariant, quantity)}
+              <Button variant="glassy" size="lg" onClick={() => addItem(product, selectedVariant, quantity)}
                 disabled={isOutOfStock} className="flex-1">
                 <ShoppingCart className="w-4 h-4" />
                 {isOutOfStock ? 'Notify Me' : 'Add to Cart'}
@@ -126,16 +129,17 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Trust */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {[
                 { icon: Truck, label: 'Free Shipping', sub: 'Orders $500+' },
                 { icon: Shield, label: 'Warranty', sub: '1-2 Years' },
                 { icon: Check, label: 'Authentic', sub: 'Genuine Surron' },
               ].map((b) => (
-                <div key={b.label} className="flex flex-col items-center text-center p-4 rounded-2xl bg-white/[0.015] border border-white/[0.04]">
-                  <b.icon className="w-4 h-4 text-white/30 mb-2" />
-                  <span className="text-[10px] font-medium text-white/60">{b.label}</span>
-                  <span className="text-[9px] text-white/25 mt-0.5">{b.sub}</span>
+                <div key={b.label} className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl"
+                  style={{ backgroundColor: 'var(--v-bg-card)', border: '1px solid var(--v-border)' }}>
+                  <b.icon className="w-4 h-4 mb-2" style={{ color: 'var(--v-text-muted)' }} />
+                  <span className="text-[10px] font-medium" style={{ color: 'var(--v-text-secondary)' }}>{b.label}</span>
+                  <span className="text-[9px] mt-0.5" style={{ color: 'var(--v-text-dim)' }}>{b.sub}</span>
                 </div>
               ))}
             </div>
@@ -143,17 +147,21 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Specs */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-20">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-px bg-white/10" />
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Specifications</span>
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-20">
+          <div className="flex items-center gap-3 mb-6 sm:mb-8">
+            <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
+            <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Specifications</span>
           </div>
-          <div className="rounded-3xl border border-white/[0.04] overflow-hidden">
-            <div className="divide-y divide-white/[0.04]">
+          <div className="rounded-3xl overflow-hidden" style={{ border: '1px solid var(--v-border)' }}>
+            <div>
               {Object.entries(product.specs).map(([key, value], idx) => (
-                <div key={key} className={`flex items-center px-6 py-4 ${idx % 2 === 0 ? 'bg-white/[0.01]' : ''}`}>
-                  <span className="w-1/3 text-xs text-white/30 font-medium">{key}</span>
-                  <span className="flex-1 text-xs font-mono text-white/70">{value}</span>
+                <div key={key} className="flex items-center px-4 sm:px-6 py-3 sm:py-4"
+                  style={{
+                    backgroundColor: idx % 2 === 0 ? 'var(--v-bg-card)' : 'transparent',
+                    borderBottom: '1px solid var(--v-border)',
+                  }}>
+                  <span className="w-1/3 text-xs font-medium" style={{ color: 'var(--v-text-muted)' }}>{key}</span>
+                  <span className="flex-1 text-xs font-mono" style={{ color: 'var(--v-text-secondary)' }}>{value}</span>
                 </div>
               ))}
             </div>
@@ -162,12 +170,12 @@ export default function ProductDetailPage() {
 
         {/* Related */}
         {related.length > 0 && (
-          <div className="mt-32">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-px bg-white/10" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Related</span>
+          <div className="mt-20 sm:mt-32">
+            <div className="flex items-center gap-3 mb-6 sm:mb-8">
+              <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
+              <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Related</span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {related.map((p, idx) => <ProductCard key={p.id} product={p} index={idx} />)}
             </div>
           </div>

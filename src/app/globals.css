@@ -2,11 +2,11 @@
 
 /* ========================================
    VANDAL — Aixor-Inspired Design System
-   Pure black, cinematic glows, serif italic
+   Dark/Light theme support
    ======================================== */
 
 @theme {
-  /* Core Palette — Pure Black */
+  /* Core Palette — Dark (default) */
   --color-bg-primary: #000000;
   --color-bg-surface: #080808;
   --color-bg-elevated: #0D0D0D;
@@ -37,27 +37,117 @@
 }
 
 /* ========================================
+   CSS Custom Properties for Theming
+   ======================================== */
+:root,
+[data-theme="dark"] {
+  --v-bg: #000000;
+  --v-bg-surface: #080808;
+  --v-bg-elevated: #0D0D0D;
+  --v-bg-card: rgba(255, 255, 255, 0.02);
+  --v-bg-card-hover: rgba(255, 255, 255, 0.03);
+  --v-text: #FFFFFF;
+  --v-text-secondary: #999999;
+  --v-text-muted: #555555;
+  --v-text-dim: #333333;
+  --v-border: rgba(255, 255, 255, 0.06);
+  --v-border-hover: rgba(255, 255, 255, 0.12);
+  --v-border-subtle: rgba(255, 255, 255, 0.04);
+  --v-glass: rgba(255, 255, 255, 0.02);
+  --v-glass-hover: rgba(255, 255, 255, 0.04);
+  --v-btn-primary-bg: #FFFFFF;
+  --v-btn-primary-text: #000000;
+  --v-btn-primary-hover: #E0E0E0;
+  --v-btn-outline-border: rgba(255, 255, 255, 0.2);
+  --v-btn-outline-hover-border: rgba(255, 255, 255, 0.5);
+  --v-btn-outline-hover-bg: rgba(255, 255, 255, 0.04);
+  --v-glow-color: rgba(0, 120, 200, 0.08);
+  --v-selection: rgba(0, 212, 255, 0.2);
+  --v-scrollbar: rgba(255, 255, 255, 0.08);
+  --v-scrollbar-hover: rgba(255, 255, 255, 0.15);
+  --v-shadow-glow: rgba(0, 120, 200, 0.04);
+  --v-gradient-start: #FFFFFF;
+  --v-gradient-end: #999999;
+  --v-overlay: rgba(0, 0, 0, 0.7);
+  --v-nav-bg: rgba(0, 0, 0, 0.6);
+  --v-input-bg: rgba(255, 255, 255, 0.02);
+  --v-roman: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] {
+  --v-bg: #FAFAFA;
+  --v-bg-surface: #F0F0F0;
+  --v-bg-elevated: #FFFFFF;
+  --v-bg-card: rgba(0, 0, 0, 0.02);
+  --v-bg-card-hover: rgba(0, 0, 0, 0.04);
+  --v-text: #111111;
+  --v-text-secondary: #555555;
+  --v-text-muted: #999999;
+  --v-text-dim: #CCCCCC;
+  --v-border: rgba(0, 0, 0, 0.08);
+  --v-border-hover: rgba(0, 0, 0, 0.15);
+  --v-border-subtle: rgba(0, 0, 0, 0.04);
+  --v-glass: rgba(255, 255, 255, 0.6);
+  --v-glass-hover: rgba(255, 255, 255, 0.8);
+  --v-btn-primary-bg: #111111;
+  --v-btn-primary-text: #FFFFFF;
+  --v-btn-primary-hover: #333333;
+  --v-btn-outline-border: rgba(0, 0, 0, 0.2);
+  --v-btn-outline-hover-border: rgba(0, 0, 0, 0.5);
+  --v-btn-outline-hover-bg: rgba(0, 0, 0, 0.04);
+  --v-glow-color: rgba(0, 100, 200, 0.06);
+  --v-selection: rgba(0, 150, 255, 0.15);
+  --v-scrollbar: rgba(0, 0, 0, 0.08);
+  --v-scrollbar-hover: rgba(0, 0, 0, 0.15);
+  --v-shadow-glow: rgba(0, 100, 200, 0.06);
+  --v-gradient-start: #111111;
+  --v-gradient-end: #555555;
+  --v-overlay: rgba(255, 255, 255, 0.7);
+  --v-nav-bg: rgba(255, 255, 255, 0.6);
+  --v-input-bg: rgba(0, 0, 0, 0.03);
+  --v-roman: rgba(0, 0, 0, 0.12);
+}
+
+/* ========================================
+   Custom Cursor Utils
+   ======================================== */
+.has-custom-cursor, 
+.has-custom-cursor * {
+  cursor: none !important;
+}
+.has-custom-cursor input, 
+.has-custom-cursor textarea,
+.has-custom-cursor [contenteditable="true"] {
+  cursor: text !important;
+}
+
+/* ========================================
+   Other Utilities
+   ======================================== */
+
+/* ========================================
    Base Styles
    ======================================== */
 
 html {
   scroll-behavior: smooth;
-  background-color: #000000;
+  background-color: var(--v-bg);
 }
 
 body {
-  background-color: #000000;
-  color: #FFFFFF;
+  background-color: var(--v-bg);
+  color: var(--v-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(0, 212, 255, 0.2);
-  color: #FFFFFF;
+  background: var(--v-selection);
+  color: var(--v-text);
 }
 
 /* Scrollbar — ultra-minimal */
@@ -70,21 +160,21 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--v-scrollbar);
   border-radius: 99px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--v-scrollbar-hover);
 }
 
 /* ========================================
    Utility Classes
    ======================================== */
 
-/* Gradient text — metallic white-to-gray sheen */
+/* Gradient text — metallic sheen */
 .gradient-text {
-  background: linear-gradient(180deg, #FFFFFF 0%, #999999 100%);
+  background: linear-gradient(180deg, var(--v-gradient-start) 0%, var(--v-gradient-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -107,7 +197,6 @@ body {
 
 /* ========================================
    Cinematic Vignette Glow
-   The signature Aixor blue edge glow
    ======================================== */
 .vignette-glow {
   position: fixed;
@@ -115,19 +204,26 @@ body {
   pointer-events: none;
   z-index: 0;
   background: 
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 120, 200, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, var(--v-glow-color) 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 0% 50%, rgba(0, 80, 180, 0.04) 0%, transparent 60%),
     radial-gradient(ellipse 60% 40% at 100% 50%, rgba(0, 80, 180, 0.04) 0%, transparent 60%),
     radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0, 60, 150, 0.06) 0%, transparent 60%);
+  transition: background 0.5s ease;
+}
+
+[data-theme="light"] .vignette-glow {
+  background: 
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 120, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 0% 50%, rgba(0, 80, 200, 0.02) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(0, 80, 200, 0.02) 0%, transparent 60%);
 }
 
 /* ========================================
-   Glass Card — Aixor Style
-   Ultra-thin borders, very low opacity
+   Glass Card — Theme-Aware
    ======================================== */
 .glass-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--v-glass);
+  border: 1px solid var(--v-border);
   border-radius: 24px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -135,73 +231,131 @@ body {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.03);
-  box-shadow: 0 0 60px rgba(0, 120, 200, 0.04);
+  border-color: var(--v-border-hover);
+  background: var(--v-glass-hover);
+  box-shadow: 0 0 60px var(--v-shadow-glow);
 }
 
 /* Glass card — no hover */
 .glass-card-static {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--v-glass);
+  border: 1px solid var(--v-border);
   border-radius: 24px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 /* ========================================
-   Buttons — Minimal, Refined
+   Buttons — Theme-Aware
    ======================================== */
 .btn-primary {
-  background: #FFFFFF;
-  color: #000000;
-  font-weight: 600;
-  border-radius: 999px;
-  transition: all 0.3s ease;
-  letter-spacing: 0.02em;
+  background: var(--v-btn-primary-bg);
+  color: var(--v-btn-primary-text);
+  border: 1px solid transparent;
+  border-radius: 9999px;
 }
 
 .btn-primary:hover {
-  background: #E0E0E0;
-  transform: translateY(-1px);
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+  background: var(--v-btn-primary-hover);
 }
 
 .btn-outline {
   background: transparent;
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-weight: 500;
-  border-radius: 999px;
-  transition: all 0.3s ease;
-  letter-spacing: 0.02em;
+  color: var(--v-text);
+  border: 1px solid var(--v-btn-outline-border);
+  border-radius: 9999px;
 }
 
 .btn-outline:hover {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--v-btn-outline-hover-border);
+  background: var(--v-btn-outline-hover-bg);
 }
 
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.04);
-  color: #FFFFFF;
+  background: var(--v-bg-card);
+  color: var(--v-text);
   font-weight: 500;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--v-border);
   transition: all 0.3s ease;
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: var(--v-glass-hover);
+  border-color: var(--v-border-hover);
 }
 
 /* ========================================
-   Section Dividers — Subtle Glows
+   3D Glassy Effect (Framer Inspired)
+   ======================================== */
+.glassy-3d {
+  position: relative;
+  background: linear-gradient(150deg, var(--v-bg-card) 0%, var(--v-bg-surface) 100%);
+  border-radius: 9999px;
+  box-shadow: 
+    inset 0px 1px 1px rgba(255, 255, 255, 0.1),
+    inset 0px -1px 2px rgba(0, 0, 0, 0.2),
+    0px 2px 8px -1px rgba(0, 0, 0, 0.3),
+    0px 0px 0px 1px var(--v-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.glassy-3d::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 40%);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.glassy-3d:hover {
+  box-shadow: 
+    inset 0px 1px 2px rgba(255, 255, 255, 0.2),
+    inset 0px -1px 3px rgba(0, 0, 0, 0.3),
+    0px 6px 16px -2px rgba(0, 0, 0, 0.4),
+    0px 0px 0px 1px var(--v-border-hover);
+  transform: translateY(-1px);
+}
+
+.glassy-3d:active {
+  transform: translateY(1px);
+  box-shadow: 
+    inset 0px 2px 4px rgba(0, 0, 0, 0.2),
+    0px 1px 2px rgba(0, 0, 0, 0.2),
+    0px 0px 0px 1px var(--v-border);
+}
+
+.glassy-3d-sale {
+  background: linear-gradient(150deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0.05) 100%);
+  box-shadow: 
+    inset 0px 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0px -1px 2px rgba(0, 212, 255, 0.2),
+    0px 4px 12px -2px rgba(0, 212, 255, 0.2),
+    0px 0px 0px 1px rgba(0, 212, 255, 0.3);
+  color: #00D4FF;
+}
+
+.glassy-3d-featured {
+  background: linear-gradient(150deg, rgba(123, 47, 255, 0.15) 0%, rgba(123, 47, 255, 0.05) 100%);
+  box-shadow: 
+    inset 0px 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0px -1px 2px rgba(123, 47, 255, 0.2),
+    0px 4px 12px -2px rgba(123, 47, 255, 0.2),
+    0px 0px 0px 1px rgba(123, 47, 255, 0.3);
+  color: #7B2FFF;
+}
+
+/* ========================================
+   Section Dividers
    ======================================== */
 .section-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  background: linear-gradient(90deg, transparent, var(--v-border), transparent);
 }
 
 .section-divider-glow {
@@ -210,7 +364,7 @@ body {
 }
 
 /* ========================================
-   Marquee — Scrolling Text Strip
+   Marquee
    ======================================== */
 @keyframes marquee {
   0% { transform: translateX(0); }
@@ -231,7 +385,7 @@ body {
    Dot Grid Background
    ======================================== */
 .dot-grid {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--v-border-subtle) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -261,7 +415,7 @@ body {
 .animate-float { animation: float 6s ease-in-out infinite; }
 .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 .animate-shimmer {
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(90deg, rgba(128,128,128,0) 0%, rgba(128,128,128,0.03) 50%, rgba(128,128,128,0) 100%);
   background-size: 200% 100%;
   animation: shimmer 2s ease-in-out infinite;
 }
@@ -272,9 +426,9 @@ body {
 
 /* Roman numeral index — Aixor style */
 .roman-index {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair), Georgia, serif;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--v-roman);
   font-size: 0.75rem;
   letter-spacing: 0.1em;
 }
@@ -293,3 +447,14 @@ body {
   pointer-events: none;
   z-index: 1;
 }
+
+/* ========================================
+   Theme-aware utility colors
+   ======================================== */
+.text-theme { color: var(--v-text); }
+.text-theme-secondary { color: var(--v-text-secondary); }
+.text-theme-muted { color: var(--v-text-muted); }
+.bg-theme { background-color: var(--v-bg); }
+.bg-theme-surface { background-color: var(--v-bg-surface); }
+.bg-theme-elevated { background-color: var(--v-bg-elevated); }
+.border-theme { border-color: var(--v-border); }

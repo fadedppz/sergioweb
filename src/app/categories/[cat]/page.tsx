@@ -32,38 +32,38 @@ export default function CategoryPage() {
 
   if (!meta) {
     return (
-      <div className="pt-16 min-h-screen flex items-center justify-center">
+      <div className="pt-16 min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--v-bg)' }}>
         <div className="text-center">
-          <h1 className="text-xl font-bold text-white mb-4">Category Not Found</h1>
-          <Link href="/shop" className="text-sm text-white/40 hover:text-white underline">Back to Shop</Link>
+          <h1 className="text-xl font-bold mb-4" style={{ color: 'var(--v-text)' }}>Category Not Found</h1>
+          <Link href="/shop" className="text-sm underline" style={{ color: 'var(--v-text-muted)' }}>Back to Shop</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--v-bg)' }}>
       <div className="vignette-glow" />
-      <div className="relative py-20 sm:py-28">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+      <div className="relative py-16 sm:py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="flex items-center gap-2 text-xs text-white/30 mb-6">
-              <Link href="/shop" className="hover:text-white/60 transition-colors">Shop</Link>
-              <span className="text-white/10">/</span>
-              <span className="text-white/50 capitalize">{cat}</span>
+            <div className="flex items-center gap-2 text-xs mb-6" style={{ color: 'var(--v-text-muted)' }}>
+              <Link href="/shop" className="transition-colors">Shop</Link>
+              <span style={{ color: 'var(--v-text-dim)' }}>/</span>
+              <span className="capitalize" style={{ color: 'var(--v-text-secondary)' }}>{cat}</span>
             </div>
             <h1 className="text-4xl sm:text-5xl leading-tight mb-4">
               <span className="font-serif-italic gradient-text">{meta.serifWord}</span>{' '}
-              <span className="font-bold text-white">{meta.title}</span>
+              <span className="font-bold" style={{ color: 'var(--v-text)' }}>{meta.title}</span>
             </h1>
-            <p className="text-sm text-white/40 max-w-lg">{meta.description}</p>
-            <p className="text-[10px] text-white/15 mt-3 uppercase tracking-widest">{categoryProducts.length} products</p>
+            <p className="text-sm max-w-lg" style={{ color: 'var(--v-text-muted)' }}>{meta.description}</p>
+            <p className="text-[10px] mt-3 uppercase tracking-widest" style={{ color: 'var(--v-text-dim)' }}>{categoryProducts.length} products</p>
           </motion.div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pb-32">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pb-24 sm:pb-32">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {categoryProducts.map((product, idx) => (
             <ProductCard key={product.id} product={product} index={idx} />
           ))}

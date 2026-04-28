@@ -11,8 +11,8 @@ interface CartContextType {
   clearCart: () => void;
   itemCount: number;
   subtotal: number;
-  isCartOpen: boolean;
-  setIsCartOpen: (open: boolean) => void;
+  drawerOpen: boolean;
+  setDrawerOpen: (open: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -21,7 +21,7 @@ const CART_STORAGE_KEY = 'vandal-cart';
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load cart from localStorage on mount
@@ -60,7 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { product, variant, quantity }];
     });
-    setIsCartOpen(true);
+    setDrawerOpen(true);
   }, []);
 
   const removeItem = useCallback((productId: string, variantId?: string) => {
@@ -103,8 +103,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       clearCart,
       itemCount,
       subtotal,
-      isCartOpen,
-      setIsCartOpen,
+      drawerOpen,
+      setDrawerOpen,
     }}>
       {children}
     </CartContext.Provider>

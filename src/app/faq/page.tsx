@@ -21,16 +21,16 @@ function FAQItem({ faq, index }: { faq: typeof faqs[0]; index: number }) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}
-      className="border-b border-white/[0.04]">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-6 text-left group">
-        <span className="text-sm font-medium text-white/70 group-hover:text-white transition-colors pr-4">{faq.q}</span>
-        <ChevronDown className={`w-4 h-4 text-white/20 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      style={{ borderBottom: '1px solid var(--v-border)' }}>
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-5 sm:py-6 text-left group">
+        <span className="text-sm font-medium pr-4 transition-colors" style={{ color: 'var(--v-text-secondary)' }}>{faq.q}</span>
+        <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} style={{ color: 'var(--v-text-dim)' }} />
       </button>
       <AnimatePresence>
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden">
-            <p className="text-sm text-white/40 leading-relaxed pb-6">{faq.a}</p>
+            <p className="text-sm leading-relaxed pb-6" style={{ color: 'var(--v-text-muted)' }}>{faq.a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -40,19 +40,19 @@ function FAQItem({ faq, index }: { faq: typeof faqs[0]; index: number }) {
 
 export default function FAQPage() {
   return (
-    <div className="pt-16 min-h-screen">
+    <div className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--v-bg)' }}>
       <div className="vignette-glow" />
-      <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-20 sm:py-28 relative z-10">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-28 relative z-10">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 sm:mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-px bg-white/10" />
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">FAQ</span>
+            <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
+            <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>FAQ</span>
           </div>
           <h1 className="text-4xl sm:text-5xl leading-tight mb-4">
             <span className="font-serif-italic gradient-text">Common</span>{' '}
-            <span className="font-bold text-white">questions</span>
+            <span className="font-bold" style={{ color: 'var(--v-text)' }}>questions</span>
           </h1>
-          <p className="text-sm text-white/40">Everything about VANDAL and Surron electric motorcycles.</p>
+          <p className="text-sm" style={{ color: 'var(--v-text-muted)' }}>Everything about VANDAL and Surron electric motorcycles.</p>
         </motion.div>
         <div>{faqs.map((faq, idx) => <FAQItem key={idx} faq={faq} index={idx} />)}</div>
       </div>

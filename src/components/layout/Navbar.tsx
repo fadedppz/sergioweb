@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, MessageCircle } from 'lucide-react';
+import { ShoppingBag, Menu, X, Sun, Moon } from 'lucide-react';
 import { useCart } from '@/lib/cart-store';
+import { useTheme } from '@/lib/theme-store';
 
 const navLinks = [
   { href: '/', label: 'HOME' },
@@ -19,6 +20,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { items, setDrawerOpen } = useCart();
+  const { theme, toggleTheme } = useTheme();
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
@@ -35,46 +37,75 @@ export function Navbar() {
         transition={{ duration: 0.6 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-black/60 backdrop-blur-xl border-b border-white/[0.04]'
+            ? 'backdrop-blur-xl border-b'
             : 'bg-transparent'
         }`}
+        style={{
+          backgroundColor: scrolled ? 'var(--v-nav-bg)' : 'transparent',
+          borderColor: scrolled ? 'var(--v-border-subtle)' : 'transparent',
+        }}
       >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="text-lg font-bold tracking-[0.15em] text-white">
+              <span className="text-lg font-bold tracking-[0.15em]" style={{ color: 'var(--v-text)' }}>
                 VANDAL
               </span>
-              <span className="text-[10px] text-white/20 font-medium tracking-wider">®</span>
+              <span className="text-[10px] font-medium tracking-wider" style={{ color: 'var(--v-text-muted)' }}>®</span>
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative text-[11px] uppercase tracking-[0.15em] text-white/50 hover:text-white transition-colors duration-300 font-medium"
+                  className="relative text-[11px] uppercase tracking-[0.15em] font-medium transition-colors duration-300 hover:opacity-100"
+                  style={{ color: 'var(--v-text-secondary)' }}
                 >
                   {link.label}
                   {link.badge && (
-                    <span className="ml-1 text-[9px] text-white/20">({link.badge})</span>
+                    <span className="ml-1 text-[9px]" style={{ color: 'var(--v-text-dim)' }}>({link.badge})</span>
                   )}
                 </Link>
               ))}
             </nav>
 
             {/* Right side */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full transition-all duration-300 hover:opacity-80"
+                style={{ color: 'var(--v-text-secondary)' }}
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {theme === 'dark' ? (
+                    <motion.div key="sun" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                      <Sun className="w-[18px] h-[18px]" />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="moon" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                      <Moon className="w-[18px] h-[18px]" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
+
               {/* Cart */}
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="relative p-2 text-white/50 hover:text-white transition-colors"
+                className="relative p-2 transition-colors"
+                style={{ color: 'var(--v-text-secondary)' }}
               >
                 <ShoppingBag className="w-[18px] h-[18px]" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-white text-black text-[9px] font-bold rounded-full flex items-center justify-center">
+                  <span
+                    className="absolute -top-0.5 -right-0.5 w-4 h-4 text-[9px] font-bold rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: 'var(--v-btn-primary-bg)', color: 'var(--v-btn-primary-text)' }}
+                  >
                     {itemCount}
                   </span>
                 )}
@@ -83,7 +114,8 @@ export function Navbar() {
               {/* Mobile toggle */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden p-2 text-white/50 hover:text-white transition-colors"
+                className="lg:hidden p-2 transition-colors"
+                style={{ color: 'var(--v-text-secondary)' }}
               >
                 {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -101,7 +133,7 @@ export function Navbar() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 lg:hidden"
           >
-            <div className="absolute inset-0 bg-black/90 backdrop-blur-2xl" />
+            <div className="absolute inset-0 backdrop-blur-2xl" style={{ backgroundColor: 'var(--v-overlay)' }} />
             <motion.nav
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -118,12 +150,26 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="text-2xl font-light text-white/70 hover:text-white transition-colors tracking-[0.1em]"
+                    className="text-2xl font-light tracking-[0.1em] transition-colors hover:opacity-100"
+                    style={{ color: 'var(--v-text-secondary)' }}
                   >
                     {link.label}
                   </Link>
                 </motion.div>
               ))}
+
+              {/* Theme toggle in mobile */}
+              <motion.button
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                onClick={toggleTheme}
+                className="flex items-center gap-3 px-6 py-3 rounded-full text-sm font-medium transition-all"
+                style={{ color: 'var(--v-text-secondary)', border: '1px solid var(--v-border)' }}
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              </motion.button>
             </motion.nav>
           </motion.div>
         )}
