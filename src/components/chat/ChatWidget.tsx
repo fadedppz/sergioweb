@@ -16,7 +16,7 @@ const FAQ_RESPONSES: Record<string, string> = {
   speed: "Top speeds: Light Bee X hits 47 mph, Ultra Bee reaches 59 mph, and the Storm Bee maxes out at 75 mph. The upcoming Storm Bee RS is estimated at 85+ mph!",
   range: "Range varies by model: Light Bee X gets 40-60 miles, Ultra Bee gets 50-75 miles, and Storm Bee gets 60-80 miles per charge. Real-world range depends on terrain and riding style.",
   shipping: "Free shipping on all orders over $500! Bikes ship fully assembled via freight carrier. Parts and accessories ship via USPS/UPS, typically arriving in 3-7 business days.",
-  warranty: "All Surron bikes come with a 1-year manufacturer warranty on frame and motor, 6 months on battery. Aftermarket parts have a 1-year VANDAL warranty.",
+  warranty: "All Surron bikes come with a 1-year manufacturer warranty on frame and motor, 6 months on battery. Aftermarket parts have a 1-year Eclipse Electric warranty.",
   parts: "We stock batteries, controllers, suspension upgrades, handguards, LED headlights, chain kits, and more. All parts are plug-and-play compatible with Surron models.",
   street: "The Light Bee S ($3,799) is our street-legal model — comes with DOT lighting, mirrors, and turn signals. The LBX can be made street legal in some states with aftermarket DOT kits.",
   controller: "Our Performance Controller ($449) upgrades your Light Bee's power delivery with sine-wave FOC, 100A continuous current, Bluetooth tuning, and 3 programmable ride modes.",
@@ -27,7 +27,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
-      text: "Hey! 👋 I'm the VANDAL AI Advisor. Ask me anything about Surron electric bikes, parts, specs, or orders.",
+      text: "Hey! 👋 I'm the Eclipse Electric AI Advisor. Ask me anything about Surron electric bikes, parts, specs, or orders.",
       isBot: true,
       timestamp: new Date(),
     },
@@ -61,7 +61,7 @@ export default function ChatWidget() {
     if (msg.includes('part') || msg.includes('upgrade') || msg.includes('accessori')) return FAQ_RESPONSES.parts;
     if (msg.includes('street') || msg.includes('legal') || msg.includes('road')) return FAQ_RESPONSES.street;
     if (msg.includes('controller') || msg.includes('performance')) return FAQ_RESPONSES.controller;
-    if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) return "Hey there! Welcome to VANDAL. Looking for a Surron bike, parts, or gear? I can help with specs, pricing, and recommendations.";
+    if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) return "Hey there! Welcome to Eclipse Electric. Looking for a Surron bike, parts, or gear? I can help with specs, pricing, and recommendations.";
     return "Great question! I can help with:\n\n• Bike models & specs\n• Pricing & comparisons\n• Parts & upgrades\n• Shipping & warranty\n• Street legality\n\nTry asking about a specific model like the \"Light Bee X\" or \"Storm Bee\", or ask about battery upgrades, top speed, or range.";
   };
 
@@ -155,7 +155,7 @@ export default function ChatWidget() {
                 <Zap className="w-3.5 h-3.5" style={{ color: 'var(--v-text-muted)' }} />
               </div>
               <div className="flex-1">
-                <h3 className="text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--v-text)' }}>VANDAL AI</h3>
+                <h3 className="text-xs font-semibold tracking-wider uppercase" style={{ color: 'var(--v-text)' }}>Eclipse Electric AI</h3>
                 <p className="text-[10px]" style={{ color: 'var(--v-text-dim)' }}>{isTyping ? 'Typing...' : 'Online'}</p>
               </div>
               <button onClick={() => setIsOpen(false)} className="p-1.5 rounded-lg transition-colors" style={{ color: 'var(--v-text-dim)' }}>

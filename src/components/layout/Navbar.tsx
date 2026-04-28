@@ -50,7 +50,7 @@ export function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
               <span className="text-lg font-bold tracking-[0.15em]" style={{ color: 'var(--v-text)' }}>
-                VANDAL
+                Eclipse Electric
               </span>
               <span className="text-[10px] font-medium tracking-wider" style={{ color: 'var(--v-text-muted)' }}>®</span>
             </Link>

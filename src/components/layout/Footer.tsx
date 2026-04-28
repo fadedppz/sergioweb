@@ -30,7 +30,7 @@ export function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-1">
-            <h3 className="text-lg font-bold tracking-[0.15em] mb-1" style={{ color: 'var(--v-text)' }}>VANDAL</h3>
+            <h3 className="text-lg font-bold tracking-[0.15em] mb-1" style={{ color: 'var(--v-text)' }}>Eclipse Electric</h3>
             <span className="text-[10px] tracking-wider" style={{ color: 'var(--v-text-dim)' }}>®</span>
             <p className="text-sm mt-4 leading-relaxed max-w-xs" style={{ color: 'var(--v-text-muted)' }}>
               Premium Surron electric motorcycles and performance parts. The future of off-road.
@@ -68,7 +68,7 @@ export function Footer() {
           className="mt-16 sm:mt-20 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4"
           style={{ borderTop: '1px solid var(--v-border)' }}
         >
-          <p className="text-xs" style={{ color: 'var(--v-text-dim)' }}>© 2025 VANDAL. All rights reserved.</p>
+          <p className="text-xs" style={{ color: 'var(--v-text-dim)' }}>© 2025 Eclipse Electric. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link href="/faq" className="text-xs transition-colors hover:opacity-80" style={{ color: 'var(--v-text-dim)' }}>Privacy</Link>
             <Link href="/faq" className="text-xs transition-colors hover:opacity-80" style={{ color: 'var(--v-text-dim)' }}>Terms</Link>

@@ -9,7 +9,7 @@ const faqs = [
   { q: 'How long does the battery last?', a: 'Light Bee X: 40-60 miles. Ultra Bee: 50-75 miles. Storm Bee: 60-80 miles per charge. Range depends on terrain, rider weight, speed, and riding style.' },
   { q: 'How long does it take to charge?', a: '3-4 hours with the standard charger. Our 10A fast charger cuts that in half. Any standard 110V/220V outlet works.' },
   { q: 'Do you offer financing?', a: "We're working on financing via Affirm and Klarna. We accept all major cards through Stripe. Contact us for custom arrangements on bikes over $5,000." },
-  { q: 'What warranty do products come with?', a: 'Surron bikes: 1-year on frame/motor, 6 months on battery. Aftermarket parts: 1-year VANDAL warranty. Extended warranty available.' },
+  { q: 'What warranty do products come with?', a: 'Surron bikes: 1-year on frame/motor, 6 months on battery. Aftermarket parts: 1-year Eclipse Electric warranty. Extended warranty available.' },
   { q: 'How does shipping work?', a: 'Bikes ship assembled via freight (free). Parts ship via USPS/UPS with free shipping over $500. Standard delivery: 3-7 business days.' },
   { q: 'Can I return a product?', a: '30-day returns on unused parts/accessories. 14-day returns on unridden bikes in original packaging. Return shipping is buyer responsibility unless defective.' },
   { q: 'Do you ship internationally?', a: 'Currently US only (contiguous 48 states). International shipping coming soon — join our newsletter for updates.' },
@@ -52,7 +52,7 @@ export default function FAQPage() {
             <span className="font-serif-italic gradient-text">Common</span>{' '}
             <span className="font-bold" style={{ color: 'var(--v-text)' }}>questions</span>
           </h1>
-          <p className="text-sm" style={{ color: 'var(--v-text-muted)' }}>Everything about VANDAL and Surron electric motorcycles.</p>
+          <p className="text-sm" style={{ color: 'var(--v-text-muted)' }}>Everything about Eclipse Electric and Surron electric motorcycles.</p>
         </motion.div>
         <div>{faqs.map((faq, idx) => <FAQItem key={idx} faq={faq} index={idx} />)}</div>
       </div>

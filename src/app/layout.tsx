@@ -32,19 +32,19 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "VANDAL — Premium Electric Motorcycles & Parts",
-    template: "%s | VANDAL",
+    default: "Eclipse Electric — Premium Electric Motorcycles & Parts",
+    template: "%s | Eclipse Electric",
   },
   description:
     "The premier destination for Surron electric motorcycles, performance parts, and riding accessories.",
   keywords: [
     "Surron", "electric motorcycle", "Light Bee X", "Storm Bee",
-    "Ultra Bee", "electric dirt bike", "VANDAL",
+    "Ultra Bee", "electric dirt bike", "Eclipse Electric",
   ],
   openGraph: {
     type: "website",
-    siteName: "VANDAL",
-    title: "VANDAL — Premium Electric Motorcycles & Parts",
+    siteName: "Eclipse Electric",
+    title: "Eclipse Electric — Premium Electric Motorcycles & Parts",
     description: "The premier destination for Surron electric motorcycles.",
   },
   robots: { index: true, follow: true },

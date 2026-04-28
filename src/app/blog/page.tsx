@@ -58,7 +58,7 @@ export default function BlogPage() {
             <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Insights</span>
           </div>
           <h1 className="text-4xl sm:text-5xl leading-tight mb-4">
-            <span className="font-serif-italic gradient-text">The VANDAL</span>{' '}
+            <span className="font-serif-italic gradient-text">The Eclipse Electric</span>{' '}
             <span className="font-bold" style={{ color: 'var(--v-text)' }}>Journal</span>
           </h1>
           <p className="text-sm max-w-lg" style={{ color: 'var(--v-text-secondary)' }}>Guides, reviews, comparisons, and news from the electric motorcycle world.</p>

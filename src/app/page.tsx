@@ -49,11 +49,11 @@ export default function HomePage() {
                 className="mb-8 sm:mb-12 max-w-sm"
               >
                 <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--v-text-secondary)' }}>
-                  &ldquo; At VANDAL, we believe the future of off-road is electric.
+                  &ldquo; At Eclipse Electric, we believe the future of off-road is electric.
                   Premium Surron motorcycles and parts, delivered with obsessive attention to detail. &rdquo;
                 </p>
                 <p className="text-xs mt-3 font-medium tracking-wider uppercase" style={{ color: 'var(--v-text-muted)' }}>
-                  VANDAL Moto
+                  Eclipse Electric
                 </p>
               </motion.div>
 

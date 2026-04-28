@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SYSTEM_PROMPT = `You are an expert sales assistant for VANDAL, an online store specializing in Surron electric motorcycles and parts. Help customers find the right bike, explain specs, assist with orders, and answer questions about Surron products. Be enthusiastic, knowledgeable, and concise. Keep responses under 150 words.
+const SYSTEM_PROMPT = `You are an expert sales assistant for Eclipse Electric, an online store specializing in Surron electric motorcycles and parts. Help customers find the right bike, explain specs, assist with orders, and answer questions about Surron products. Be enthusiastic, knowledgeable, and concise. Keep responses under 150 words.
 
 Key products:
 - Surron Light Bee X: $4,299, 6kW motor, 47mph, 40-60mi range, 125lbs
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
             'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
             'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-            'X-Title': 'VANDAL AI Advisor',
+            'X-Title': 'Eclipse Electric AI Advisor',
           },
           body: JSON.stringify({
             model,
