@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { useCart } from '@/lib/cart-store';
@@ -25,7 +26,11 @@ export function Navbar() {
   const { items, setDrawerOpen } = useCart();
   const { theme, toggleTheme } = useTheme();
   const { user, profile, isAdmin, signOut } = useAuth();
+  const pathname = usePathname();
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+
+  // Hide global navbar on admin routes
+  if (pathname?.startsWith('/admin')) return null;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);

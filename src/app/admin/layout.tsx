@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-store';
 import {
   LayoutDashboard, Package, ShoppingCart, Users, Tag,
-  Settings, ScrollText, ArrowLeft, Loader2
+  Settings, ScrollText, ArrowLeft, Loader2, User, LogOut
 } from 'lucide-react';
 
 const adminLinks = [
@@ -20,7 +20,7 @@ const adminLinks = [
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, isAdmin, isLoading } = useAuth();
+  const { user, profile, isAdmin, isLoading, signOut } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
@@ -49,34 +49,60 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="pt-16 min-h-screen flex" style={{ backgroundColor: 'var(--v-bg)' }}>
-      {/* Sidebar */}
-      <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r py-6 px-4" style={{ borderColor: 'var(--v-border)' }}>
-        <div className="flex items-center gap-2 px-3 mb-6">
-          <div className="w-2 h-2 rounded-full bg-[#00D4FF]" />
-          <span className="text-xs font-semibold uppercase tracking-[0.15em]" style={{ color: '#00D4FF' }}>Admin Panel</span>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--v-bg)' }}>
+      
+      {/* ═══════════════════════════════════
+          ADMIN TOP NAVBAR
+          ═══════════════════════════════════ */}
+      <header className="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b sticky top-0 z-50 backdrop-blur-xl" 
+        style={{ borderColor: 'var(--v-border)', backgroundColor: 'var(--v-bg-surface)' }}>
+        <div className="flex items-center gap-3">
+          <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_10px_#00D4FF]" style={{ backgroundColor: '#00D4FF' }} />
+          <span className="text-sm font-bold tracking-[0.15em] uppercase" style={{ color: 'var(--v-text)' }}>
+            Vandal <span style={{ color: '#00D4FF' }}>Admin</span>
+          </span>
         </div>
 
-        <nav className="flex-1 space-y-1">
-          {adminLinks.map((link) => {
-            const isActive = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href));
-            return (
-              <Link key={link.href} href={link.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                  isActive ? 'bg-[rgba(0,212,255,0.08)]' : 'hover:bg-[var(--v-bg-card)]'
-                }`}
-                style={{ color: isActive ? '#00D4FF' : 'var(--v-text-muted)' }}>
-                <link.icon className="w-4 h-4" />
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="flex items-center gap-4 sm:gap-6">
+          <Link href="/">
+            <button className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-all hover:scale-105"
+              style={{ backgroundColor: 'var(--v-bg-card)', color: 'var(--v-text)', border: '1px solid var(--v-border-hover)' }}>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Return as Shopper
+            </button>
+          </Link>
+          
+          <div className="flex items-center gap-3 pl-4 sm:pl-6 border-l" style={{ borderColor: 'var(--v-border)' }}>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm"
+              style={{ backgroundColor: 'var(--v-btn-primary-bg)', color: 'var(--v-btn-primary-text)' }}>
+              {(profile?.full_name || user?.email || 'A')[0].toUpperCase()}
+            </div>
+            <button onClick={() => signOut()} className="p-1.5 rounded-full transition-colors hover:bg-red-500/10 text-red-400">
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </header>
 
-        <Link href="/" className="flex items-center gap-2 px-3 py-2 text-xs transition-colors" style={{ color: 'var(--v-text-dim)' }}>
-          <ArrowLeft className="w-3 h-3" /> Back to Store
-        </Link>
-      </aside>
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <aside className="hidden lg:flex flex-col w-60 shrink-0 border-r py-6 px-4 overflow-y-auto" style={{ borderColor: 'var(--v-border)' }}>
+          <nav className="flex-1 space-y-1">
+            {adminLinks.map((link) => {
+              const isActive = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href));
+              return (
+                <Link key={link.href} href={link.href}
+                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-xs font-medium transition-all ${
+                    isActive ? 'bg-[rgba(0,212,255,0.08)] shadow-[inset_2px_0_0_#00D4FF]' : 'hover:bg-[var(--v-bg-card)]'
+                  }`}
+                  style={{ color: isActive ? '#00D4FF' : 'var(--v-text-muted)' }}>
+                  <link.icon className="w-4 h-4" />
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
 
       {/* Mobile Admin Nav */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 border-t px-2 py-2 flex items-center justify-around"
@@ -94,10 +120,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         })}
       </div>
 
-      {/* Main Content */}
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-20 lg:pb-8 overflow-auto">
-        {children}
-      </main>
+        {/* Main Content */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 overflow-y-auto">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

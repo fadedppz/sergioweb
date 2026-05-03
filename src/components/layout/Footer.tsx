@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const footerLinks = {
   Web: [
@@ -25,6 +26,10 @@ const footerLinks = {
 };
 
 export function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/admin')) return null;
+
   return (
     <footer className="relative" style={{ borderTop: '1px solid var(--v-border)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-20">
