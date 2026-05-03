@@ -3,7 +3,7 @@
 import { Canvas } from '@react-three/fiber';
 import { Environment, Float } from '@react-three/drei';
 import { Suspense } from 'react';
-import { ChromeSphere } from './ChromeSphere';
+import { ElectricBike } from './ElectricBike';
 import { ElectricParticles } from './ElectricParticles';
 
 export function HeroScene() {
@@ -46,9 +46,9 @@ export function HeroScene() {
             distance={20}
           />
 
-          {/* Chrome sphere — the main hero element */}
+          {/* Electric Bike hero element */}
           <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.3}>
-            <ChromeSphere />
+            <ElectricBike />
           </Float>
 
           {/* Subtle ambient particles */}
