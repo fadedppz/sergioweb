@@ -27,7 +27,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
-      text: "Hey! 👋 I'm the Eclipse Electric AI Advisor. Ask me anything about Surron electric bikes, parts, specs, or orders.",
+      text: "Hello. I am the Eclipse Electric AI Advisor. Ask me anything about Surron electric bikes, parts, specs, or orders.",
       isBot: true,
       timestamp: new Date(),
     },

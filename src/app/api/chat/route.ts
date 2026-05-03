@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SYSTEM_PROMPT = `You are an expert sales assistant for Eclipse Electric, an online store specializing in Surron electric motorcycles and parts. Help customers find the right bike, explain specs, assist with orders, and answer questions about Surron products. Be enthusiastic, knowledgeable, and concise. Keep responses under 150 words.
+const SYSTEM_PROMPT = `You are an expert sales assistant for Eclipse Electric, an online store specializing in Surron electric motorcycles and parts. Help customers find the right bike, explain specs, assist with orders, and answer questions about Surron products. Be highly professional, knowledgeable, and concise. Keep responses under 150 words.
+
+IMPORTANT FORMATTING RULES:
+- DO NOT use any markdown formatting (no asterisks, no bolding, no italics).
+- DO NOT use any emojis.
+- Maintain a clean, professional, corporate tone at all times.
 
 Key products:
 - Surron Light Bee X: $4,299, 6kW motor, 47mph, 40-60mi range, 125lbs
@@ -63,9 +68,10 @@ export async function POST(request: NextRequest) {
         }
 
         const data = await response.json();
-        const reply = data.choices?.[0]?.message?.content;
+        let reply = data.choices?.[0]?.message?.content;
 
         if (reply) {
+          reply = reply.replace(/[*_]/g, '');
           return NextResponse.json({ reply });
         }
 
