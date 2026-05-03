@@ -10,7 +10,9 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/';
 
   if (code) {
-    const response = NextResponse.redirect(`${origin}${next}`);
+    // If it's a new signup confirmation, redirect to our new success page
+    const redirectPath = next === '/' ? '/account/confirmed' : next;
+    const response = NextResponse.redirect(`${origin}${redirectPath}`);
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

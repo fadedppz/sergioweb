@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Eye, Package } from 'lucide-react';
+import { ShoppingBag, Eye, Package, Star } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/data/products';
 import { Badge } from '@/components/ui/Badge';
@@ -25,14 +25,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="group relative"
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      className="group relative flex flex-col"
     >
       <div
-        className="relative rounded-2xl overflow-hidden transition-all duration-500"
+        className="relative rounded-2xl overflow-hidden transition-all duration-500 mb-4"
         style={{
-          backgroundColor: 'var(--v-bg-card)',
-          border: '1px solid var(--v-border)',
+          backgroundColor: 'var(--v-bg-surface)',
         }}
       >
         {/* Image Container */}
@@ -50,25 +49,19 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               </div>
             </div>
 
-            {/* Hover overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4 gap-2">
+            {/* Quick Add overlay (Patagonia style - full width at bottom) */}
+            <div className="absolute left-0 right-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-20">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!isOutOfStock) addItem(product, product.variants?.[0]);
                 }}
                 disabled={isOutOfStock}
-                className="flex items-center gap-1.5 px-4 py-2 bg-white text-black text-xs font-semibold rounded-full hover:bg-white/90 transition-all disabled:opacity-40"
+                className="w-full py-4 bg-black text-white text-xs font-bold tracking-widest uppercase hover:bg-black/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                style={{ backgroundColor: 'var(--v-text)' }}
               >
-                <ShoppingCart className="w-3 h-3" />
-                {isOutOfStock ? 'Sold Out' : 'Add'}
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); router.push(productUrl); }}
-                className="flex items-center gap-1.5 px-4 py-2 bg-white/10 backdrop-blur-sm text-white text-xs rounded-full hover:bg-white/20 transition-all"
-              >
-                <Eye className="w-3 h-3" />
-                View
+                <ShoppingBag className="w-4 h-4" style={{ color: 'var(--v-bg)' }} />
+                <span style={{ color: 'var(--v-bg)' }}>{isOutOfStock ? 'Sold Out' : 'Quick Add'}</span>
               </button>
             </div>
 
@@ -81,31 +74,51 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           </div>
         </div>
 
-        {/* Product Info */}
-        <div className="p-3 sm:p-4">
-          <Link href={productUrl}>
-            <p className="text-[10px] uppercase tracking-[0.15em] mb-1" style={{ color: 'var(--v-text-dim)' }}>
-              {product.category === 'bikes' ? 'Electric Bikes' : product.category === 'parts' ? 'Parts' : 'Accessories'}
-            </p>
-            <h3 className="text-sm font-medium transition-colors duration-300 line-clamp-1" style={{ color: 'var(--v-text-secondary)' }}>
+        {/* Product Info (Patagonia style) */}
+        <div className="flex flex-col flex-1 px-1">
+          {/* Swatches (simulated with random colors or product variants) */}
+          <div className="flex gap-1.5 mb-3">
+            <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#111', borderColor: 'var(--v-border)' }} />
+            <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#ccc', borderColor: 'var(--v-border)' }} />
+            {product.category === 'bikes' && (
+              <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#7B2FFF', borderColor: 'var(--v-border)' }} />
+            )}
+          </div>
+
+          <Link href={productUrl} className="group-hover:opacity-80 transition-opacity">
+            <h3 className="text-sm font-semibold mb-1" style={{ color: 'var(--v-text)' }}>
               {product.name}
             </h3>
           </Link>
 
-          <div className="flex items-center gap-2 mt-2.5">
-            <span className="text-sm sm:text-base font-mono font-bold" style={{ color: 'var(--v-text)' }}>{formatPrice(product.price)}</span>
-            {isOnSale && product.compare_price && (
-              <span className="text-xs font-mono line-through" style={{ color: 'var(--v-text-dim)' }}>{formatPrice(product.compare_price)}</span>
-            )}
+          {/* Star rating placeholder */}
+          <div className="flex items-center gap-0.5 mb-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star key={star} className="w-3 h-3 fill-current" style={{ color: star === 5 ? 'var(--v-border)' : 'var(--v-text)' }} />
+            ))}
+            <span className="text-[10px] ml-1" style={{ color: 'var(--v-text-muted)' }}>(24)</span>
           </div>
 
-          <div className="flex items-center gap-1.5 mt-2">
-            <div className={`w-1 h-1 rounded-full ${
-              isOutOfStock ? 'bg-red-500/60' : product.stock_qty < 5 ? 'bg-amber-400/60' : 'bg-emerald-400/40'
-            }`} />
-            <span className="text-[10px]" style={{ color: 'var(--v-text-dim)' }}>
-              {isOutOfStock ? 'Pre-order' : product.stock_qty < 5 ? `${product.stock_qty} left` : 'In stock'}
-            </span>
+          <div className="mt-auto flex items-end justify-between pt-2">
+            <div className="flex flex-col">
+              {isOnSale && product.compare_price && (
+                <span className="text-xs font-mono line-through mb-0.5" style={{ color: 'var(--v-text-dim)' }}>
+                  {formatPrice(product.compare_price)}
+                </span>
+              )}
+              <span className="text-sm font-mono font-bold" style={{ color: isOnSale ? '#00D4FF' : 'var(--v-text)' }}>
+                {formatPrice(product.price)}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <div className={`w-1.5 h-1.5 rounded-full ${
+                isOutOfStock ? 'bg-red-500/60' : product.stock_qty < 5 ? 'bg-amber-400/60' : 'bg-emerald-400/60'
+              }`} />
+              <span className="text-[10px] uppercase tracking-wider font-medium" style={{ color: 'var(--v-text-dim)' }}>
+                {isOutOfStock ? 'Pre-order' : 'In stock'}
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -11,7 +11,8 @@ import { useAuth } from '@/lib/auth-store';
 const navLinks = [
   { href: '/', label: 'HOME' },
   { href: '/shop', label: 'SHOP', badge: '17' },
-  { href: '/build', label: 'BUILD YOURS' },
+  { href: '/testimonials', label: 'TESTIMONIALS' },
+  { href: '#', label: 'BUILD YOURS (Coming Soon!)' },
   { href: '/blog', label: 'INSIGHTS' },
   { href: '/about', label: 'ABOUT' },
   { href: '/contact', label: 'CONTACT' },
@@ -70,10 +71,11 @@ export function Navbar() {
             <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
               {navLinks.map((link) => (
                 <Link
-                  key={link.href}
+                  key={link.label}
                   href={link.href}
-                  className="relative text-[11px] uppercase tracking-[0.15em] font-medium transition-colors duration-300 hover:opacity-100"
+                  className={`relative text-[11px] uppercase tracking-[0.15em] font-medium transition-colors duration-300 ${link.href === '#' ? 'opacity-50 cursor-not-allowed hover:opacity-50' : 'hover:opacity-100'}`}
                   style={{ color: 'var(--v-text-secondary)' }}
+                  onClick={(e) => link.href === '#' && e.preventDefault()}
                 >
                   {link.label}
                   {link.badge && (
@@ -220,15 +222,21 @@ export function Navbar() {
             >
               {navLinks.map((link, idx) => (
                 <motion.div
-                  key={link.href}
+                  key={link.label}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.15 + idx * 0.05 }}
                 >
                   <Link
                     href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="text-2xl font-light tracking-[0.1em] transition-colors hover:opacity-100"
+                    onClick={(e) => {
+                      if (link.href === '#') {
+                        e.preventDefault();
+                      } else {
+                        setMobileOpen(false);
+                      }
+                    }}
+                    className={`text-2xl font-light tracking-[0.1em] transition-colors ${link.href === '#' ? 'opacity-50 cursor-not-allowed hover:opacity-50' : 'hover:opacity-100'}`}
                     style={{ color: 'var(--v-text-secondary)' }}
                   >
                     {link.label}

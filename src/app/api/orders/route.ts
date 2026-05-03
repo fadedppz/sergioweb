@@ -269,7 +269,9 @@ async function sendOrderConfirmationEmail(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Eclipse Electric <orders@eclipseelectric.com>',
+      // You can only use a custom domain if you own it. Until then, use Resend's testing email.
+      // NOTE: onboarding@resend.dev can ONLY send emails to the email address you signed up to Resend with!
+      from: 'Eclipse Electric <onboarding@resend.dev>',
       to: customerEmail,
       subject: `Order Confirmed — ${invoiceNumber}`,
       html: `
@@ -299,7 +301,7 @@ async function sendOrderConfirmationEmail(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Eclipse Electric <orders@eclipseelectric.com>',
+      from: 'Eclipse Electric <onboarding@resend.dev>',
       to: notificationEmail,
       subject: `New Order — ${invoiceNumber} ($${total})`,
       html: `

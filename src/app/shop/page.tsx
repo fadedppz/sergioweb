@@ -97,25 +97,92 @@ export default function ShopPage() {
 
         <div className="flex gap-8 lg:gap-10">
           {/* Sidebar */}
-          <aside className="hidden lg:block w-52 shrink-0">
-            <div className="sticky top-24 space-y-8">
+          <aside className="hidden lg:block w-64 shrink-0 pr-8 border-r" style={{ borderColor: 'var(--v-border)' }}>
+            <div className="sticky top-24 space-y-10">
+              {/* Category Links (Patagonia Style) */}
               <div>
-                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-4" style={{ color: 'var(--v-text-muted)' }}>Availability</h4>
-                <label className="flex items-center gap-2.5 cursor-pointer group">
-                  <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)}
-                    className="w-4 h-4 rounded cursor-pointer accent-current" />
-                  <span className="text-xs transition-colors" style={{ color: 'var(--v-text-muted)' }}>In stock only</span>
+                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-4" style={{ color: 'var(--v-text)' }}>Categories</h4>
+                <ul className="space-y-3">
+                  {categories.map((cat) => (
+                    <li key={cat.value}>
+                      <button
+                        onClick={() => setCategory(cat.value)}
+                        className={`text-sm transition-colors duration-200 flex items-center justify-between w-full group ${category === cat.value ? 'font-semibold' : ''}`}
+                        style={{ color: category === cat.value ? 'var(--v-text)' : 'var(--v-text-muted)' }}
+                      >
+                        <span className="group-hover:text-[var(--v-text-secondary)]">{cat.label}</span>
+                        <span className="text-[10px] opacity-60">({cat.count})</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="h-px w-full" style={{ backgroundColor: 'var(--v-border-subtle)' }} />
+
+              {/* Availability */}
+              <div>
+                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-4" style={{ color: 'var(--v-text)' }}>Availability</h4>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative flex items-center justify-center w-5 h-5 rounded border transition-colors"
+                    style={{ 
+                      borderColor: inStockOnly ? '#00D4FF' : 'var(--v-border)',
+                      backgroundColor: inStockOnly ? '#00D4FF' : 'transparent' 
+                    }}>
+                    <input type="checkbox" checked={inStockOnly} onChange={(e) => setInStockOnly(e.target.checked)} className="opacity-0 absolute inset-0 cursor-pointer" />
+                    {inStockOnly && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                  </div>
+                  <span className="text-sm transition-colors" style={{ color: inStockOnly ? 'var(--v-text)' : 'var(--v-text-secondary)' }}>In stock only</span>
                 </label>
               </div>
-              <div>
-                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-4" style={{ color: 'var(--v-text-muted)' }}>Max Price</h4>
-                <input type="range" min={0} max={15000} step={100} value={maxPrice}
-                  onChange={(e) => setMaxPrice(parseInt(e.target.value))} className="w-full" />
-                <div className="flex justify-between text-[10px] font-mono mt-2" style={{ color: 'var(--v-text-dim)' }}>
-                  <span>$0</span><span>${maxPrice.toLocaleString()}</span>
+
+              <div className="h-px w-full" style={{ backgroundColor: 'var(--v-border-subtle)' }} />
+
+              {/* Framer-Style Pricing Slider */}
+              <div className="relative">
+                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-6" style={{ color: 'var(--v-text)' }}>Price Range</h4>
+                
+                <div className="relative pt-4 pb-2">
+                  <input 
+                    type="range" 
+                    min={0} max={15000} step={100} value={maxPrice}
+                    onChange={(e) => setMaxPrice(parseInt(e.target.value))} 
+                    className="w-full absolute inset-0 opacity-0 z-10 cursor-pointer h-full" 
+                  />
+                  
+                  {/* Custom Track */}
+                  <div className="w-full h-1.5 rounded-full relative overflow-hidden" style={{ backgroundColor: 'var(--v-border)' }}>
+                    <div 
+                      className="absolute left-0 top-0 bottom-0 rounded-full"
+                      style={{ 
+                        width: `${(maxPrice / 15000) * 100}%`,
+                        background: 'linear-gradient(90deg, #00D4FF 0%, #7B2FFF 100%)',
+                        boxShadow: '0 0 10px rgba(0, 212, 255, 0.5)'
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Custom Thumb */}
+                  <div 
+                    className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full shadow-lg border-2 border-gray-100 flex items-center justify-center transition-transform hover:scale-110 pointer-events-none"
+                    style={{ 
+                      left: `calc(${(maxPrice / 15000) * 100}% - 10px)`,
+                      boxShadow: '0 0 15px rgba(123, 47, 255, 0.4)'
+                    }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#7B2FFF' }} />
+                  </div>
+                </div>
+
+                <div className="mt-8 flex flex-col items-center p-4 rounded-xl" style={{ backgroundColor: 'var(--v-bg-card)', border: '1px solid var(--v-border-subtle)' }}>
+                  <span className="text-[10px] uppercase tracking-wider mb-1" style={{ color: 'var(--v-text-muted)' }}>Max Price</span>
+                  <span className="text-2xl font-mono font-bold tracking-tight" style={{ color: 'var(--v-text)' }}>
+                    ${maxPrice.toLocaleString()}
+                  </span>
                 </div>
               </div>
-              <p className="text-[10px]" style={{ color: 'var(--v-text-dim)' }}>{filteredProducts.length} products</p>
+
+              <p className="text-[10px] mt-8" style={{ color: 'var(--v-text-dim)' }}>Showing {filteredProducts.length} results</p>
             </div>
           </aside>
 
@@ -128,7 +195,7 @@ export default function ShopPage() {
                   className="text-xs underline" style={{ color: 'var(--v-text-secondary)' }}>Clear filters</button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                 {filteredProducts.map((product, idx) => (
                   <ProductCard key={product.id} product={product} index={idx} />
                 ))}
@@ -155,10 +222,33 @@ export default function ShopPage() {
                 <span className="text-xs" style={{ color: 'var(--v-text-muted)' }}>In stock only</span>
               </label>
               <div>
-                <h4 className="text-[10px] uppercase tracking-[0.2em] mb-3" style={{ color: 'var(--v-text-muted)' }}>Max Price</h4>
-                <input type="range" min={0} max={15000} step={100} value={maxPrice}
-                  onChange={(e) => setMaxPrice(parseInt(e.target.value))} className="w-full" />
-                <p className="text-xs font-mono mt-1" style={{ color: 'var(--v-text-muted)' }}>${maxPrice.toLocaleString()}</p>
+                <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-6" style={{ color: 'var(--v-text)' }}>Price Range</h4>
+                <div className="relative pt-4 pb-2">
+                  <input 
+                    type="range" 
+                    min={0} max={15000} step={100} value={maxPrice}
+                    onChange={(e) => setMaxPrice(parseInt(e.target.value))} 
+                    className="w-full absolute inset-0 opacity-0 z-10 cursor-pointer h-full" 
+                  />
+                  <div className="w-full h-1.5 rounded-full relative overflow-hidden" style={{ backgroundColor: 'var(--v-border)' }}>
+                    <div 
+                      className="absolute left-0 top-0 bottom-0 rounded-full"
+                      style={{ 
+                        width: `${(maxPrice / 15000) * 100}%`,
+                        background: 'linear-gradient(90deg, #00D4FF 0%, #7B2FFF 100%)'
+                      }}
+                    />
+                  </div>
+                  <div 
+                    className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full shadow-lg border-2 border-gray-100 flex items-center justify-center pointer-events-none"
+                    style={{ left: `calc(${(maxPrice / 15000) * 100}% - 10px)` }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#7B2FFF' }} />
+                  </div>
+                </div>
+                <div className="mt-6 text-center">
+                  <span className="text-xl font-mono font-bold" style={{ color: 'var(--v-text)' }}>${maxPrice.toLocaleString()}</span>
+                </div>
               </div>
               <Button variant="primary" size="lg" className="w-full" onClick={() => setShowFilters(false)}>
                 Show {filteredProducts.length} Results
