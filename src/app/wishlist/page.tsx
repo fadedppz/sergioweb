@@ -25,18 +25,21 @@ export default function WishlistPage() {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center text-center py-32 rounded-3xl"
-            style={{ backgroundColor: 'var(--v-bg-surface)', border: '1px solid var(--v-border)' }}
+            className="relative flex flex-col items-center justify-center text-center py-32 rounded-3xl overflow-hidden group"
+            style={{ backgroundColor: 'var(--v-bg-card)', border: '1px solid var(--v-border)', backdropFilter: 'blur(16px)' }}
           >
-            <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: 'var(--v-bg-card)' }}>
-              <Heart className="w-10 h-10" style={{ color: 'var(--v-text-dim)' }} />
+            {/* Glassy shine */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 bg-gradient-to-tr from-transparent via-[rgba(255,255,255,0.03)] to-transparent pointer-events-none" />
+
+            <div className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center mb-6 shadow-xl" style={{ backgroundColor: 'var(--v-bg-elevated)', border: '1px solid var(--v-border)' }}>
+              <Heart className="w-10 h-10" style={{ color: 'var(--v-text-muted)' }} />
             </div>
-            <h2 className="text-xl font-bold mb-3 tracking-wide" style={{ color: 'var(--v-text)' }}>Nothing here yet.</h2>
-            <p className="text-sm mb-8 max-w-md mx-auto" style={{ color: 'var(--v-text-muted)' }}>
+            <h2 className="relative z-10 text-xl font-bold mb-3 tracking-wide" style={{ color: 'var(--v-text)' }}>Nothing here yet.</h2>
+            <p className="relative z-10 text-sm mb-8 max-w-md mx-auto" style={{ color: 'var(--v-text-muted)' }}>
               Explore our collection of premium electric motorcycles and performance parts to start building your wishlist.
             </p>
             <Link href="/shop" 
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-xs font-bold tracking-[0.15em] uppercase transition-all hover:scale-105"
+              className="relative z-10 inline-flex items-center gap-2 px-8 py-4 rounded-full text-xs font-bold tracking-[0.15em] uppercase transition-all hover:scale-105"
               style={{ backgroundColor: 'var(--v-text)', color: 'var(--v-bg)' }}>
               Explore the Shop
               <ArrowRight className="w-4 h-4" />

@@ -190,7 +190,7 @@ export function Navbar() {
                 {wishlistCount > 0 && (
                   <span
                     className="absolute -top-0.5 -right-0.5 w-4 h-4 text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"
-                    style={{ backgroundColor: '#FF2DAA', color: '#fff' }}
+                    style={{ backgroundColor: 'var(--v-text)', color: 'var(--v-bg)' }}
                   >
                     {wishlistCount}
                   </span>

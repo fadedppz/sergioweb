@@ -80,8 +80,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               <Heart 
                 className={`w-4 h-4 transition-all duration-300 ${isSaved ? 'scale-110' : 'scale-100 hover:scale-110'}`} 
                 style={{ 
-                  color: isSaved ? '#FF2DAA' : 'var(--v-text)', 
-                  fill: isSaved ? '#FF2DAA' : 'transparent' 
+                  color: 'var(--v-text)', 
+                  fill: isSaved ? 'var(--v-text)' : 'transparent' 
                 }} 
               />
             </button>
