@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { ShoppingBag, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard, Heart } from 'lucide-react';
 import { useCart } from '@/lib/cart-store';
+import { useWishlist } from '@/lib/wishlist-store';
 import { useTheme } from '@/lib/theme-store';
 import { useAuth } from '@/lib/auth-store';
 
@@ -13,7 +14,7 @@ const navLinks = [
   { href: '/', label: 'HOME' },
   { href: '/shop', label: 'SHOP', badge: '17' },
   { href: '/testimonials', label: 'TESTIMONIALS' },
-  { href: '#', label: 'BUILD YOURS (Coming Soon!)' },
+  { href: '/build', label: 'BUILD YOURS (Waitlist)' },
   { href: '/blog', label: 'INSIGHTS' },
   { href: '/about', label: 'ABOUT' },
   { href: '/contact', label: 'CONTACT' },
@@ -24,6 +25,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { items, setDrawerOpen } = useCart();
+  const { itemCount: wishlistCount } = useWishlist();
   const { theme, toggleTheme } = useTheme();
   const { user, profile, isAdmin, signOut } = useAuth();
   const pathname = usePathname();
@@ -78,9 +80,8 @@ export function Navbar() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className={`relative text-[11px] uppercase tracking-[0.15em] font-medium transition-colors duration-300 ${link.href === '#' ? 'opacity-50 cursor-not-allowed hover:opacity-50' : 'hover:opacity-100'}`}
+                  className={`relative text-[11px] uppercase tracking-[0.15em] font-medium transition-colors duration-300 hover:opacity-100`}
                   style={{ color: 'var(--v-text-secondary)' }}
-                  onClick={(e) => link.href === '#' && e.preventDefault()}
                 >
                   {link.label}
                   {link.badge && (
@@ -179,6 +180,23 @@ export function Navbar() {
                 </Link>
               )}
 
+              {/* Wishlist */}
+              <Link
+                href="/wishlist"
+                className="relative p-2 transition-colors"
+                style={{ color: 'var(--v-text-secondary)' }}
+              >
+                <Heart className="w-[18px] h-[18px]" />
+                {wishlistCount > 0 && (
+                  <span
+                    className="absolute -top-0.5 -right-0.5 w-4 h-4 text-[9px] font-bold rounded-full flex items-center justify-center shadow-lg"
+                    style={{ backgroundColor: '#FF2DAA', color: '#fff' }}
+                  >
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+
               {/* Cart */}
               <button
                 onClick={() => setDrawerOpen(true)}
@@ -234,14 +252,8 @@ export function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    onClick={(e) => {
-                      if (link.href === '#') {
-                        e.preventDefault();
-                      } else {
-                        setMobileOpen(false);
-                      }
-                    }}
-                    className={`text-2xl font-light tracking-[0.1em] transition-colors ${link.href === '#' ? 'opacity-50 cursor-not-allowed hover:opacity-50' : 'hover:opacity-100'}`}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-2xl font-light tracking-[0.1em] transition-colors hover:opacity-100"
                     style={{ color: 'var(--v-text-secondary)' }}
                   >
                     {link.label}

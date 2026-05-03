@@ -8,7 +8,7 @@ const footerLinks = {
     { label: 'Home', href: '/' },
     { label: 'Shop', href: '/shop' },
     { label: 'Testimonials', href: '/testimonials' },
-    { label: 'Build Yours (Coming Soon!)', href: '#' },
+    { label: 'Build Yours (Waitlist)', href: '/build' },
     { label: 'Blog', href: '/blog' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
@@ -57,9 +57,8 @@ export function Footer() {
                   <li key={link.href + link.label}>
                     <Link
                       href={link.href}
-                      className={`text-sm transition-colors duration-300 ${link.href === '#' ? 'opacity-50 cursor-not-allowed hover:opacity-50' : 'hover:opacity-80'}`}
+                      className={`text-sm transition-colors duration-300 hover:opacity-80`}
                       style={{ color: 'var(--v-text-secondary)' }}
-                      onClick={(e) => link.href === '#' && e.preventDefault()}
                     >
                       {link.label}
                     </Link>

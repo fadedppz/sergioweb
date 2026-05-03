@@ -8,6 +8,7 @@ import { Product } from '@/types';
 import { formatPrice } from '@/data/products';
 import { Badge } from '@/components/ui/Badge';
 import { useCart } from '@/lib/cart-store';
+import { useWishlist } from '@/lib/wishlist-store';
 
 interface ProductCardProps {
   product: Product;
@@ -16,10 +17,13 @@ interface ProductCardProps {
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addItem } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const router = useRouter();
+  
   const isOutOfStock = product.stock_qty === 0;
   const isOnSale = product.compare_price && product.compare_price > product.price;
   const productUrl = `/shop/${product.slug}`;
+  const isSaved = isInWishlist(product.id);
 
   return (
     <motion.div
@@ -60,6 +64,27 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               </button>
             </div>
 
+            {/* Wishlist Heart Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleWishlist(product);
+              }}
+              className="absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-30"
+              style={{ 
+                backgroundColor: isSaved ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid var(--v-border-subtle)'
+              }}
+              aria-label={isSaved ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              <Heart 
+                className={`w-4 h-4 transition-all duration-300 ${isSaved ? 'scale-110' : 'scale-100 hover:scale-110'}`} 
+                style={{ 
+                  color: isSaved ? '#FF2DAA' : 'var(--v-text)', 
+                  fill: isSaved ? '#FF2DAA' : 'transparent' 
+                }} 
+              />
+            </button>
 
           </div>
         </div>

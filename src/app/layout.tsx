@@ -5,6 +5,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/lib/cart-store";
+import { WishlistProvider } from "@/lib/wishlist-store";
 import { ThemeProvider } from "@/lib/theme-store";
 import { AuthProvider } from "@/lib/auth-store";
 import { CartDrawer } from "@/components/shop/CartDrawer";
@@ -67,12 +68,14 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <CartProvider>
-              <Navbar />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <CartDrawer />
-              <ChatWidget />
-              <CustomCursor />
+              <WishlistProvider>
+                <Navbar />
+                <main className="flex-1">{children}</main>
+                <Footer />
+                <CartDrawer />
+                <ChatWidget />
+                <CustomCursor />
+              </WishlistProvider>
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>
