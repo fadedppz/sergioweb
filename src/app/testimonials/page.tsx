@@ -72,8 +72,6 @@ export default function TestimonialsPage() {
     <div className="pt-24 min-h-screen pb-32" style={{ backgroundColor: 'var(--v-bg)' }}>
       {/* Background glow effects */}
       <div className="vignette-glow" />
-      <div className="absolute top-1/4 left-0 w-96 h-96 rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-0 w-96 h-96 rounded-full bg-purple-500/10 blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         
@@ -106,11 +104,16 @@ export default function TestimonialsPage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: t.delay, type: 'spring', stiffness: 50 }}
+              whileHover={{ 
+                scale: 1.02, 
+                rotate: t.id % 2 === 0 ? 1 : -1,
+                transition: { duration: 0.2 }
+              }}
               className={`relative ${t.position} group cursor-default`}
             >
               {/* Card */}
               <div 
-                className="relative z-10 p-8 sm:p-10 rounded-3xl transition-transform duration-500 hover:-translate-y-2 h-full flex flex-col justify-between"
+                className="relative z-10 p-8 sm:p-10 rounded-3xl h-full flex flex-col justify-between"
                 style={{ 
                   backgroundColor: 'var(--v-bg-card)', 
                   border: '1px solid var(--v-border)',
