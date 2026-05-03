@@ -22,7 +22,7 @@ const benefits = [
 ];
 
 export default function HomePage() {
-  const featured = getFeaturedProducts().slice(0, 4);
+  const featured = getFeaturedProducts().slice(0, 3);
 
   return (
     <div className="relative">
@@ -139,10 +139,6 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
           {/* Section header */}
           <div className="flex items-start gap-8 mb-12 sm:mb-16">
-            <div className="hidden sm:flex items-center gap-3 pt-2">
-              <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
-              <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Featured</span>
-            </div>
             <div>
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}
@@ -166,7 +162,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
             {featured.map((product, idx) => (
               <ProductCard key={product.id} product={product} index={idx} />
             ))}
