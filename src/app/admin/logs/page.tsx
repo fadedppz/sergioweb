@@ -15,7 +15,7 @@ export default function AdminLogsPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase.from('admin_audit_logs').select('*').order('created_at', { ascending: false }).limit(100)
-      .then(({ data }) => { setLogs((data as AuditLog[]) || []); setLoading(false); });
+      .then(({ data }: { data: AuditLog[] | null }) => { setLogs(data || []); setLoading(false); });
   }, []);
 
   if (loading) return <div className="text-sm" style={{ color: 'var(--v-text-muted)' }}>Loading...</div>;

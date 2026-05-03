@@ -13,7 +13,7 @@ export default function AdminSettingsPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.from('site_settings').select('*').then(({ data }) => {
+    supabase.from('site_settings').select('*').then(({ data }: { data: Array<{ key: string; value: string }> | null }) => {
       const map: Record<string, string> = {};
       (data || []).forEach((s: { key: string; value: string }) => { map[s.key] = s.value; });
       setSettings(map);

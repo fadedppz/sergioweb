@@ -16,7 +16,7 @@ export default function AdminCustomersPage() {
   useEffect(() => {
     const supabase = createClient();
     supabase.from('profiles').select('*').order('created_at', { ascending: false })
-      .then(({ data }) => { setCustomers((data as Customer[]) || []); setLoading(false); });
+      .then(({ data }: { data: Customer[] | null }) => { setCustomers(data || []); setLoading(false); });
   }, []);
 
   const filtered = customers.filter(c =>

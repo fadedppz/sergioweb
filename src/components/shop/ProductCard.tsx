@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Eye, Package, Star } from 'lucide-react';
+import { ShoppingBag, Eye, Package, Star, Heart } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/data/products';
 import { Badge } from '@/components/ui/Badge';

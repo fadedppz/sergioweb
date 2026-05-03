@@ -34,8 +34,8 @@ export default function AdminDashboard() {
 
     const orders = ordersRes.data || [];
     const today = new Date().toISOString().split('T')[0];
-    const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
-    const ordersToday = orders.filter(o => o.created_at?.startsWith(today)).length;
+    const totalRevenue = orders.reduce((sum: number, o: Record<string, unknown>) => sum + ((o.total as number) || 0), 0);
+    const ordersToday = orders.filter((o: Record<string, unknown>) => (o.created_at as string)?.startsWith(today)).length;
 
     setStats({
       totalRevenue,
