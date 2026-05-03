@@ -193,7 +193,7 @@ export default function ShopPage() {
                   className="text-xs underline" style={{ color: 'var(--v-text-secondary)' }}>Clear filters</button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
                 {filteredProducts.map((product, idx) => (
                   <ProductCard key={product.id} product={product} index={idx} />
                 ))}

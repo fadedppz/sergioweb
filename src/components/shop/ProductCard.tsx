@@ -52,10 +52,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   if (!isOutOfStock) addItem(product, product.variants?.[0]);
                 }}
                 disabled={isOutOfStock}
-                className="w-full py-4 bg-black text-white text-xs font-bold tracking-widest uppercase hover:bg-black/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-black text-white text-[10px] font-bold tracking-wider uppercase hover:bg-black/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 style={{ backgroundColor: 'var(--v-text)' }}
               >
-                <ShoppingBag className="w-4 h-4" style={{ color: 'var(--v-bg)' }} />
+                <ShoppingBag className="w-3.5 h-3.5" style={{ color: 'var(--v-bg)' }} />
                 <span style={{ color: 'var(--v-bg)' }}>{isOutOfStock ? 'Sold Out' : 'Quick Add'}</span>
               </button>
             </div>
@@ -76,7 +76,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           </div>
 
           <Link href={productUrl} className="group-hover:opacity-80 transition-opacity">
-            <h3 className="text-sm font-semibold mb-1" style={{ color: 'var(--v-text)' }}>
+            <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--v-text)' }}>
               {product.name}
             </h3>
           </Link>
@@ -96,7 +96,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   {formatPrice(product.compare_price)}
                 </span>
               )}
-              <span className="text-sm font-mono font-bold" style={{ color: isOnSale ? '#00D4FF' : 'var(--v-text)' }}>
+              <span className="text-base font-mono font-bold" style={{ color: isOnSale ? '#00D4FF' : 'var(--v-text)' }}>
                 {formatPrice(product.price)}
               </span>
             </div>
