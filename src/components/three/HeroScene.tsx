@@ -36,7 +36,7 @@ export function HeroScene() {
 
       {/* Floating 2D Bike Image (High Quality) */}
       <motion.div
-        className="relative w-full max-w-5xl px-4 pointer-events-none z-10"
+        className="relative w-full max-w-5xl px-4 pointer-events-none z-10 lg:translate-x-32 lg:-translate-y-16 translate-x-12 -translate-y-8"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{
           opacity: 1,
