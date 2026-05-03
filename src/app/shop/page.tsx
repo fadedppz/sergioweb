@@ -156,21 +156,19 @@ export default function ShopPage() {
                       className="absolute left-0 top-0 bottom-0 rounded-full"
                       style={{ 
                         width: `${(maxPrice / 15000) * 100}%`,
-                        background: 'linear-gradient(90deg, #00D4FF 0%, #7B2FFF 100%)',
-                        boxShadow: '0 0 10px rgba(0, 212, 255, 0.5)'
+                        backgroundColor: 'var(--v-text)'
                       }}
                     />
                   </div>
                   
                   {/* Custom Thumb */}
                   <div 
-                    className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full shadow-lg border-2 border-gray-100 flex items-center justify-center transition-transform hover:scale-110 pointer-events-none"
+                    className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full border border-gray-300 flex items-center justify-center transition-transform hover:scale-110 pointer-events-none shadow-sm"
                     style={{ 
                       left: `calc(${(maxPrice / 15000) * 100}% - 10px)`,
-                      boxShadow: '0 0 15px rgba(123, 47, 255, 0.4)'
                     }}
                   >
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#7B2FFF' }} />
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#000' }} />
                   </div>
                 </div>
 
@@ -235,15 +233,15 @@ export default function ShopPage() {
                       className="absolute left-0 top-0 bottom-0 rounded-full"
                       style={{ 
                         width: `${(maxPrice / 15000) * 100}%`,
-                        background: 'linear-gradient(90deg, #00D4FF 0%, #7B2FFF 100%)'
+                        backgroundColor: 'var(--v-text)'
                       }}
                     />
                   </div>
                   <div 
-                    className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full shadow-lg border-2 border-gray-100 flex items-center justify-center pointer-events-none"
+                    className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow-sm flex items-center justify-center pointer-events-none"
                     style={{ left: `calc(${(maxPrice / 15000) * 100}% - 10px)` }}
                   >
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#7B2FFF' }} />
+                    <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#000' }} />
                   </div>
                 </div>
                 <div className="mt-6 text-center">

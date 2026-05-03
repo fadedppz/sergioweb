@@ -28,12 +28,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       transition={{ duration: 0.5, delay: index * 0.05 }}
       className="group relative flex flex-col"
     >
-      <div
-        className="relative rounded-2xl overflow-hidden transition-all duration-500 mb-4"
-        style={{
-          backgroundColor: 'var(--v-bg-surface)',
-        }}
-      >
+      <div className="relative overflow-hidden transition-all duration-500 mb-4">
         {/* Image Container */}
         <div
           onClick={() => router.push(productUrl)}
