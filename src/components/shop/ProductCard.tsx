@@ -60,12 +60,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               </button>
             </div>
 
-            {/* Badges */}
-            <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-              {product.is_featured && <Badge variant="featured">Featured</Badge>}
-              {isOnSale && <Badge variant="sale">Sale</Badge>}
-              {isOutOfStock && <Badge variant="preorder">Pre-Order</Badge>}
-            </div>
+
           </div>
         </div>
 
