@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartProvider } from "@/lib/cart-store";
 import { ThemeProvider } from "@/lib/theme-store";
+import { AuthProvider } from "@/lib/auth-store";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import ChatWidget from "@/components/chat/ChatWidget";
 import { CustomCursor } from "@/components/ui/CustomCursor";
@@ -64,14 +65,16 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col transition-colors duration-500">
         <ThemeProvider>
-          <CartProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <CartDrawer />
-            <ChatWidget />
-            <CustomCursor />
-          </CartProvider>
+          <AuthProvider>
+            <CartProvider>
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <CartDrawer />
+              <ChatWidget />
+              <CustomCursor />
+            </CartProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

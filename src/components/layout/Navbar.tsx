@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, Menu, X, Sun, Moon, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { useCart } from '@/lib/cart-store';
 import { useTheme } from '@/lib/theme-store';
+import { useAuth } from '@/lib/auth-store';
 
 const navLinks = [
   { href: '/', label: 'HOME' },
@@ -19,8 +20,10 @@ const navLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { items, setDrawerOpen } = useCart();
   const { theme, toggleTheme } = useTheme();
+  const { user, profile, isAdmin, signOut } = useAuth();
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
@@ -28,6 +31,14 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close user menu on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const handleClick = () => setUserMenuOpen(false);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [userMenuOpen]);
 
   return (
     <>
@@ -94,6 +105,73 @@ export function Navbar() {
                 </AnimatePresence>
               </button>
 
+              {/* User / Auth */}
+              {user ? (
+                <div className="relative">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setUserMenuOpen(!userMenuOpen); }}
+                    className="flex items-center gap-2 p-2 rounded-full transition-colors"
+                    style={{ color: 'var(--v-text-secondary)' }}
+                  >
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold"
+                      style={{ backgroundColor: 'var(--v-btn-primary-bg)', color: 'var(--v-btn-primary-text)' }}>
+                      {(profile?.full_name || user.email || 'U')[0].toUpperCase()}
+                    </div>
+                  </button>
+
+                  {/* Dropdown */}
+                  <AnimatePresence>
+                    {userMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        className="absolute right-0 top-12 w-56 rounded-2xl overflow-hidden shadow-2xl z-50"
+                        style={{ backgroundColor: 'var(--v-bg-elevated)', border: '1px solid var(--v-border)' }}
+                      >
+                        <div className="px-4 py-3" style={{ borderBottom: '1px solid var(--v-border)' }}>
+                          <p className="text-xs font-medium truncate" style={{ color: 'var(--v-text)' }}>
+                            {profile?.full_name || 'User'}
+                          </p>
+                          <p className="text-[10px] truncate" style={{ color: 'var(--v-text-dim)' }}>
+                            {user.email}
+                          </p>
+                        </div>
+                        <div className="py-1">
+                          <Link href="/account" className="flex items-center gap-3 px-4 py-2.5 text-xs transition-colors hover:bg-[var(--v-bg-card)]"
+                            style={{ color: 'var(--v-text-secondary)' }} onClick={() => setUserMenuOpen(false)}>
+                            <User className="w-3.5 h-3.5" /> My Account
+                          </Link>
+                          <Link href="/account/orders" className="flex items-center gap-3 px-4 py-2.5 text-xs transition-colors hover:bg-[var(--v-bg-card)]"
+                            style={{ color: 'var(--v-text-secondary)' }} onClick={() => setUserMenuOpen(false)}>
+                            <ShoppingBag className="w-3.5 h-3.5" /> Order History
+                          </Link>
+                          {isAdmin && (
+                            <Link href="/admin" className="flex items-center gap-3 px-4 py-2.5 text-xs transition-colors hover:bg-[var(--v-bg-card)]"
+                              style={{ color: '#00D4FF' }} onClick={() => setUserMenuOpen(false)}>
+                              <LayoutDashboard className="w-3.5 h-3.5" /> Admin Dashboard
+                            </Link>
+                          )}
+                        </div>
+                        <div style={{ borderTop: '1px solid var(--v-border)' }}>
+                          <button onClick={() => { signOut(); setUserMenuOpen(false); }}
+                            className="flex items-center gap-3 px-4 py-2.5 text-xs w-full transition-colors hover:bg-[var(--v-bg-card)]"
+                            style={{ color: 'var(--v-text-muted)' }}>
+                            <LogOut className="w-3.5 h-3.5" /> Sign Out
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <Link href="/login"
+                  className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[11px] uppercase tracking-[0.1em] font-medium rounded-full transition-colors"
+                  style={{ color: 'var(--v-text-secondary)', border: '1px solid var(--v-border)' }}>
+                  <User className="w-3.5 h-3.5" /> Sign In
+                </Link>
+              )}
+
               {/* Cart */}
               <button
                 onClick={() => setDrawerOpen(true)}
@@ -158,11 +236,47 @@ export function Navbar() {
                 </motion.div>
               ))}
 
+              {/* Auth links in mobile */}
+              {user ? (
+                <>
+                  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+                    <Link href="/account" onClick={() => setMobileOpen(false)}
+                      className="text-lg font-light tracking-[0.1em]" style={{ color: 'var(--v-text-secondary)' }}>
+                      MY ACCOUNT
+                    </Link>
+                  </motion.div>
+                  {isAdmin && (
+                    <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
+                      <Link href="/admin" onClick={() => setMobileOpen(false)}
+                        className="text-lg font-light tracking-[0.1em]" style={{ color: '#00D4FF' }}>
+                        ADMIN
+                      </Link>
+                    </motion.div>
+                  )}
+                  <motion.button
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                    onClick={() => { signOut(); setMobileOpen(false); }}
+                    className="text-lg font-light tracking-[0.1em]" style={{ color: 'var(--v-text-muted)' }}>
+                    SIGN OUT
+                  </motion.button>
+                </>
+              ) : (
+                <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+                  <Link href="/login" onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 px-6 py-3 rounded-full text-sm font-medium transition-all"
+                    style={{ color: 'var(--v-text-secondary)', border: '1px solid var(--v-border)' }}>
+                    <User className="w-4 h-4" /> Sign In
+                  </Link>
+                </motion.div>
+              )}
+
               {/* Theme toggle in mobile */}
               <motion.button
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.65 }}
                 onClick={toggleTheme}
                 className="flex items-center gap-3 px-6 py-3 rounded-full text-sm font-medium transition-all"
                 style={{ color: 'var(--v-text-secondary)', border: '1px solid var(--v-border)' }}
