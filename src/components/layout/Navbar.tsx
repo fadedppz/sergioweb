@@ -87,9 +87,6 @@ export function Navbar() {
                   style={{ color: 'var(--v-text-secondary)' }}
                 >
                   {link.label}
-                  {link.badge && (
-                    <span className="ml-1 text-[9px]" style={{ color: 'var(--v-text-dim)' }}>({link.badge})</span>
-                  )}
                 </Link>
               ))}
             </nav>
