@@ -1,24 +1,87 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ShoppingCart, ArrowLeft, Check, Package, Truck, Shield } from 'lucide-react';
-import { getProductBySlug, formatPrice, products } from '@/data/products';
+import { ShoppingCart, ArrowLeft, Check, Package, Truck, Shield, Loader2 } from 'lucide-react';
+import { formatPrice } from '@/data/products';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { ProductCard } from '@/components/shop/ProductCard';
 import { useCart } from '@/lib/cart-store';
-import { ProductVariant } from '@/types';
+import { createClient } from '@/lib/supabase/client';
+import { Product, ProductVariant } from '@/types';
 
 export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const product = getProductBySlug(slug);
   const { addItem } = useCart();
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(product?.variants?.[0]);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [related, setRelated] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, product_variants(*)')
+        .eq('slug', slug)
+        .eq('is_active', true)
+        .single();
+
+      if (!error && data) {
+        const mapped: Product = {
+          id: data.id,
+          slug: data.slug,
+          name: data.name,
+          description: data.description || '',
+          price: data.price,
+          compare_price: data.compare_price || null,
+          category: data.category || 'bikes',
+          stock_qty: data.stock_qty ?? 0,
+          images: data.images || [],
+          specs: data.specs || {},
+          is_featured: data.is_featured ?? false,
+          created_at: data.created_at || '',
+          variants: data.product_variants || [],
+        };
+        setProduct(mapped);
+        setSelectedVariant(mapped.variants?.[0]);
+
+        // Fetch related products
+        const { data: relatedData } = await supabase
+          .from('products')
+          .select('*')
+          .eq('category', data.category)
+          .eq('is_active', true)
+          .neq('id', data.id)
+          .limit(4);
+
+        if (relatedData) {
+          setRelated(relatedData.map((p: any) => ({
+            id: p.id, slug: p.slug, name: p.name, description: p.description || '',
+            price: p.price, compare_price: p.compare_price || null, category: p.category || 'bikes',
+            stock_qty: p.stock_qty ?? 0, images: p.images || [], specs: p.specs || {},
+            is_featured: p.is_featured ?? false, created_at: p.created_at || '',
+          })));
+        }
+      }
+      setLoading(false);
+    };
+    fetchProduct();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="pt-16 min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--v-bg)' }}>
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--v-text-muted)' }} />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -34,7 +97,6 @@ export default function ProductDetailPage() {
   const isOutOfStock = product.stock_qty === 0;
   const isOnSale = product.compare_price && product.compare_price > product.price;
   const currentPrice = product.price + (selectedVariant?.price_delta || 0);
-  const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   return (
     <div className="pt-16 min-h-screen" style={{ backgroundColor: 'var(--v-bg)' }}>
@@ -133,7 +195,7 @@ export default function ProductDetailPage() {
               {[
                 { icon: Truck, label: 'Free Shipping', sub: 'Orders $500+' },
                 { icon: Shield, label: 'Warranty', sub: '1-2 Years' },
-                { icon: Check, label: 'Authentic', sub: 'Genuine Surron' },
+                { icon: Check, label: 'Authentic', sub: 'Genuine Parts' },
               ].map((b) => (
                 <div key={b.label} className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl"
                   style={{ backgroundColor: 'var(--v-bg-card)', border: '1px solid var(--v-border)' }}>
@@ -147,26 +209,28 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Specs */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-20">
-          <div className="flex items-center gap-3 mb-6 sm:mb-8">
-            <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
-            <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Specifications</span>
-          </div>
-          <div className="rounded-3xl overflow-hidden" style={{ border: '1px solid var(--v-border)' }}>
-            <div>
-              {Object.entries(product.specs).map(([key, value], idx) => (
-                <div key={key} className="flex items-center px-4 sm:px-6 py-3 sm:py-4"
-                  style={{
-                    backgroundColor: idx % 2 === 0 ? 'var(--v-bg-card)' : 'transparent',
-                    borderBottom: '1px solid var(--v-border)',
-                  }}>
-                  <span className="w-1/3 text-xs font-medium" style={{ color: 'var(--v-text-muted)' }}>{key}</span>
-                  <span className="flex-1 text-xs font-mono" style={{ color: 'var(--v-text-secondary)' }}>{value}</span>
-                </div>
-              ))}
+        {Object.keys(product.specs).length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-20">
+            <div className="flex items-center gap-3 mb-6 sm:mb-8">
+              <div className="w-8 h-px" style={{ backgroundColor: 'var(--v-border-hover)' }} />
+              <span className="text-[10px] uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-muted)' }}>Specifications</span>
             </div>
-          </div>
-        </motion.div>
+            <div className="rounded-3xl overflow-hidden" style={{ border: '1px solid var(--v-border)' }}>
+              <div>
+                {Object.entries(product.specs).map(([key, value], idx) => (
+                  <div key={key} className="flex items-center px-4 sm:px-6 py-3 sm:py-4"
+                    style={{
+                      backgroundColor: idx % 2 === 0 ? 'var(--v-bg-card)' : 'transparent',
+                      borderBottom: '1px solid var(--v-border)',
+                    }}>
+                    <span className="w-1/3 text-xs font-medium" style={{ color: 'var(--v-text-muted)' }}>{key}</span>
+                    <span className="flex-1 text-xs font-mono" style={{ color: 'var(--v-text-secondary)' }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Related */}
         {related.length > 0 && (

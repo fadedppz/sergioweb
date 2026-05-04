@@ -1,21 +1,24 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { products } from '@/data/products';
+import { Loader2 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { Product } from '@/types';
 import Link from 'next/link';
 
 const categoryMeta: Record<string, { title: string; serifWord: string; description: string }> = {
   bikes: {
     title: 'Bikes',
     serifWord: 'Electric',
-    description: 'Surron electric motorcycles — from lightweight trail bikes to full-size highway machines.',
+    description: 'Premium electric motorcycles from Surron, Talaria, Altis, and more.',
   },
   parts: {
     title: 'upgrades',
     serifWord: 'Performance',
-    description: 'Batteries, controllers, suspension, and drivetrain upgrades for your Surron.',
+    description: 'Batteries, controllers, suspension, and drivetrain upgrades.',
   },
   accessories: {
     title: 'gear',
@@ -28,7 +31,30 @@ export default function CategoryPage() {
   const params = useParams();
   const cat = params.cat as string;
   const meta = categoryMeta[cat];
-  const categoryProducts = products.filter(p => p.category === cat);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category', cat)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      if (data) {
+        setProducts(data.map((p: any) => ({
+          id: p.id, slug: p.slug, name: p.name, description: p.description || '',
+          price: p.price, compare_price: p.compare_price || null, category: p.category || 'bikes',
+          stock_qty: p.stock_qty ?? 0, images: p.images || [], specs: p.specs || {},
+          is_featured: p.is_featured ?? false, created_at: p.created_at || '',
+        })));
+      }
+      setLoading(false);
+    };
+    fetchProducts();
+  }, [cat]);
 
   if (!meta) {
     return (
@@ -57,17 +83,23 @@ export default function CategoryPage() {
               <span className="font-bold" style={{ color: 'var(--v-text)' }}>{meta.title}</span>
             </h1>
             <p className="text-sm max-w-lg" style={{ color: 'var(--v-text-muted)' }}>{meta.description}</p>
-            <p className="text-[10px] mt-3 uppercase tracking-widest" style={{ color: 'var(--v-text-dim)' }}>{categoryProducts.length} products</p>
+            <p className="text-[10px] mt-3 uppercase tracking-widest" style={{ color: 'var(--v-text-dim)' }}>{products.length} products</p>
           </motion.div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pb-24 sm:pb-32">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {categoryProducts.map((product, idx) => (
-            <ProductCard key={product.id} product={product} index={idx} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--v-text-muted)' }} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+            {products.map((product, idx) => (
+              <ProductCard key={product.id} product={product} index={idx} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

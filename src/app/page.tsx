@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
@@ -7,7 +8,8 @@ import { ArrowRight, ArrowUpRight, Zap, Shield, Battery, Wrench } from 'lucide-r
 import { Button } from '@/components/ui/Button';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { ProductCard } from '@/components/shop/ProductCard';
-import { getFeaturedProducts } from '@/data/products';
+import { createClient } from '@/lib/supabase/client';
+import { Product } from '@/types';
 
 const HeroScene = dynamic(
   () => import('@/components/three/HeroScene').then(mod => ({ default: mod.HeroScene })),
@@ -22,7 +24,28 @@ const benefits = [
 ];
 
 export default function HomePage() {
-  const featured = getFeaturedProducts().slice(0, 3);
+  const [featured, setFeatured] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      const supabase = createClient();
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .eq('is_featured', true)
+        .limit(3);
+      if (data) {
+        setFeatured(data.map((p: any) => ({
+          id: p.id, slug: p.slug, name: p.name, description: p.description || '',
+          price: p.price, compare_price: p.compare_price || null, category: p.category || 'bikes',
+          stock_qty: p.stock_qty ?? 0, images: p.images || [], specs: p.specs || {},
+          is_featured: true, created_at: p.created_at || '',
+        })));
+      }
+    };
+    fetchFeatured();
+  }, []);
 
   return (
     <div className="relative">

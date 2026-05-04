@@ -1,21 +1,58 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { SlidersHorizontal, X } from 'lucide-react';
-import { products } from '@/data/products';
+import { SlidersHorizontal, X, Loader2 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 import { ProductCard } from '@/components/shop/ProductCard';
 import { Button } from '@/components/ui/Button';
+import { formatPrice } from '@/data/products';
+import { Product } from '@/types';
 
 type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'newest';
 type CategoryFilter = 'all' | 'bikes' | 'parts' | 'accessories';
 
 export default function ShopPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<CategoryFilter>('all');
   const [sortBy, setSortBy] = useState<SortOption>('featured');
   const [inStockOnly, setInStockOnly] = useState(false);
   const [maxPrice, setMaxPrice] = useState(15000);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        // Map Supabase data to match Product type
+        const mapped: Product[] = data.map((p: any) => ({
+          id: p.id,
+          slug: p.slug,
+          name: p.name,
+          description: p.description || '',
+          price: p.price,
+          compare_price: p.compare_price || null,
+          category: p.category || 'bikes',
+          stock_qty: p.stock_qty ?? 0,
+          images: p.images || [],
+          specs: p.specs || {},
+          is_featured: p.is_featured ?? false,
+          created_at: p.created_at || '',
+          variants: p.product_variants || [],
+        }));
+        setProducts(mapped);
+      }
+      setLoading(false);
+    };
+    fetchProducts();
+  }, []);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -29,7 +66,7 @@ export default function ShopPage() {
       default: result.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
     }
     return result;
-  }, [category, sortBy, inStockOnly, maxPrice]);
+  }, [products, category, sortBy, inStockOnly, maxPrice]);
 
   const categories: { label: string; value: CategoryFilter; count: number }[] = [
     { label: 'All', value: 'all', count: products.length },
@@ -99,7 +136,7 @@ export default function ShopPage() {
           {/* Sidebar */}
           <aside className="hidden lg:block w-64 shrink-0 pr-8 border-r" style={{ borderColor: 'var(--v-border)' }}>
             <div className="sticky top-24 space-y-10">
-              {/* Category Links (Patagonia Style) */}
+              {/* Category Links */}
               <div>
                 <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-4" style={{ color: 'var(--v-text)' }}>Categories</h4>
                 <ul className="space-y-3">
@@ -138,7 +175,7 @@ export default function ShopPage() {
 
               <div className="h-px w-full" style={{ backgroundColor: 'var(--v-border-subtle)' }} />
 
-              {/* Framer-Style Pricing Slider */}
+              {/* Pricing Slider */}
               <div className="relative">
                 <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium mb-6" style={{ color: 'var(--v-text)' }}>Price Range</h4>
                 
@@ -149,8 +186,6 @@ export default function ShopPage() {
                     onChange={(e) => setMaxPrice(parseInt(e.target.value))} 
                     className="w-full absolute inset-0 opacity-0 z-10 cursor-pointer h-full" 
                   />
-                  
-                  {/* Custom Track */}
                   <div className="w-full h-1.5 rounded-full relative overflow-hidden" style={{ backgroundColor: 'var(--v-border)' }}>
                     <div 
                       className="absolute left-0 top-0 bottom-0 rounded-full"
@@ -160,13 +195,9 @@ export default function ShopPage() {
                       }}
                     />
                   </div>
-                  
-                  {/* Custom Thumb */}
                   <div 
                     className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full border border-gray-300 flex items-center justify-center transition-transform hover:scale-110 pointer-events-none shadow-sm"
-                    style={{ 
-                      left: `calc(${(maxPrice / 15000) * 100}% - 10px)`,
-                    }}
+                    style={{ left: `calc(${(maxPrice / 15000) * 100}% - 10px)` }}
                   >
                     <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#000' }} />
                   </div>
@@ -186,7 +217,11 @@ export default function ShopPage() {
 
           {/* Grid */}
           <div className="flex-1">
-            {filteredProducts.length === 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-24">
+                <Loader2 className="w-6 h-6 animate-spin" style={{ color: 'var(--v-text-muted)' }} />
+              </div>
+            ) : filteredProducts.length === 0 ? (
               <div className="text-center py-24">
                 <p className="text-sm mb-2" style={{ color: 'var(--v-text-muted)' }}>No products match your filters</p>
                 <button onClick={() => { setCategory('all'); setInStockOnly(false); setMaxPrice(15000); }}

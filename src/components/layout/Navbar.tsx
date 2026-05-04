@@ -173,7 +173,7 @@ export function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <Link href="/login"
+                <Link href={`/login?redirect=${encodeURIComponent(pathname || '/')}`}
                   className="hidden sm:flex items-center gap-1.5 px-4 py-2 text-[11px] uppercase tracking-[0.1em] font-medium rounded-full transition-colors"
                   style={{ color: 'var(--v-text-secondary)', border: '1px solid var(--v-border)' }}>
                   <User className="w-3.5 h-3.5" /> Sign In
@@ -289,7 +289,7 @@ export function Navbar() {
                 </>
               ) : (
                 <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-                  <Link href="/login" onClick={() => setMobileOpen(false)}
+                  <Link href={`/login?redirect=${encodeURIComponent(pathname || '/')}`} onClick={() => setMobileOpen(false)}
                     className="flex items-center gap-3 px-6 py-3 rounded-full text-sm font-medium transition-all"
                     style={{ color: 'var(--v-text-secondary)', border: '1px solid var(--v-border)' }}>
                     <User className="w-4 h-4" /> Sign In
