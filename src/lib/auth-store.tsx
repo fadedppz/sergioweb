@@ -92,11 +92,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase]);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+    // Clear local state immediately so UI updates
     setUser(null);
     setProfile(null);
-    // Force redirect to home after signout
-    window.location.href = '/';
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error('Sign out error:', e);
+    }
+    // Force a full page reload to clear all cached state
+    window.location.replace('/');
   }, [supabase]);
 
   const resetPassword = useCallback(async (email: string) => {

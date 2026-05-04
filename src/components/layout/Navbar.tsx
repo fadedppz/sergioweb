@@ -12,9 +12,9 @@ import { useAuth } from '@/lib/auth-store';
 
 const navLinks = [
   { href: '/', label: 'HOME' },
-  { href: '/shop', label: 'SHOP', badge: '17' },
+  { href: '/shop', label: 'SHOP' },
   { href: '/testimonials', label: 'TESTIMONIALS' },
-  { href: '/build', label: 'BUILD YOURS (Waitlist)' },
+  { href: '/build', label: 'BUILD YOURS' },
   { href: '/blog', label: 'INSIGHTS' },
   { href: '/about', label: 'ABOUT' },
   { href: '/contact', label: 'CONTACT' },
@@ -31,8 +31,8 @@ export function Navbar() {
   const pathname = usePathname();
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Hide global navbar on admin routes
-  if (pathname?.startsWith('/admin')) return null;
+  // Track if on admin route (used after hooks)
+  const isAdminRoute = pathname?.startsWith('/admin');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -47,6 +47,9 @@ export function Navbar() {
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
   }, [userMenuOpen]);
+
+  // Hide global navbar on admin routes (AFTER all hooks)
+  if (isAdminRoute) return null;
 
   return (
     <>

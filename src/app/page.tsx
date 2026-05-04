@@ -117,13 +117,15 @@ export default function HomePage() {
         <div className="marquee-track whitespace-nowrap">
           {[...Array(4)].map((_, i) => (
             <span key={i} className="inline-flex items-center gap-8 sm:gap-12 mx-4 sm:mx-6">
-              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Surron Light Bee X</span>
+              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Surron</span>
               <span style={{ color: 'var(--v-border-hover)' }}>◆</span>
-              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Storm Bee</span>
+              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Talaria</span>
               <span style={{ color: 'var(--v-border-hover)' }}>◆</span>
-              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Ultra Bee</span>
+              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Altis</span>
               <span style={{ color: 'var(--v-border-hover)' }}>◆</span>
-              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Performance Parts</span>
+              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Arctic</span>
+              <span style={{ color: 'var(--v-border-hover)' }}>◆</span>
+              <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>79bike</span>
               <span style={{ color: 'var(--v-border-hover)' }}>◆</span>
               <span className="text-xs sm:text-sm uppercase tracking-[0.3em] font-medium" style={{ color: 'var(--v-text-dim)' }}>Electric Revolution</span>
               <span style={{ color: 'var(--v-border-hover)' }}>◆</span>

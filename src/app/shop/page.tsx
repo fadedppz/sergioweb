@@ -55,7 +55,7 @@ export default function ShopPage() {
               <span className="font-bold" style={{ color: 'var(--v-text)' }}>collection</span>
             </h1>
             <p className="text-sm mt-4 max-w-md" style={{ color: 'var(--v-text-muted)' }}>
-              Surron electric motorcycles, performance upgrades, and riding accessories.
+              Premium electric motorcycles from Surron, Talaria, Altis, and more.
             </p>
           </motion.div>
         </div>

@@ -40,10 +40,16 @@ export default function AdminProductsPage() {
   useEffect(() => { fetchProducts(); }, []);
 
   const fetchProducts = async () => {
-    const supabase = createClient();
-    const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false });
-    setProducts((data as Product[]) || []);
-    setLoading(false);
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      setProducts((data as Product[]) || []);
+    } catch (err: any) {
+      console.error('Failed to fetch products:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleActive = async (id: string, current: boolean) => {
@@ -99,32 +105,40 @@ export default function AdminProductsPage() {
     if (!validateForm()) return;
     setSaving(true);
 
-    const supabase = createClient();
-    const slug = form.slug || generateSlug(form.name);
+    try {
+      const supabase = createClient();
+      const slug = form.slug || generateSlug(form.name);
 
-    const payload = {
-      slug,
-      name: form.name.trim(),
-      description: form.description.trim(),
-      price: Number(form.price),
-      compare_price: form.compare_price ? Number(form.compare_price) : null,
-      stock_qty: Number(form.stock_qty),
-      category: form.category,
-      is_featured: form.is_featured,
-      is_active: form.is_active,
-      images: form.images,
-      specs: form.specs,
-    };
+      const payload = {
+        slug,
+        name: form.name.trim(),
+        description: form.description.trim(),
+        price: Number(form.price),
+        compare_price: form.compare_price ? Number(form.compare_price) : null,
+        stock_qty: Number(form.stock_qty),
+        category: form.category,
+        is_featured: form.is_featured,
+        is_active: form.is_active,
+        images: form.images,
+        specs: form.specs,
+      };
 
-    if (editing) {
-      await supabase.from('products').update(payload).eq('id', editing.id);
-    } else {
-      await supabase.from('products').insert([payload]);
+      if (editing) {
+        const { error } = await supabase.from('products').update(payload).eq('id', editing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('products').insert([payload]);
+        if (error) throw error;
+      }
+
+      setModalOpen(false);
+      fetchProducts();
+    } catch (err: any) {
+      console.error('Save failed:', err);
+      setErrors(prev => ({ ...prev, save: err.message || 'Failed to save product. Check console for details.' }));
+    } finally {
+      setSaving(false);
     }
-
-    setSaving(false);
-    setModalOpen(false);
-    fetchProducts();
   };
 
   const addSpec = () => {
@@ -378,6 +392,9 @@ export default function AdminProductsPage() {
                     </button>
                   </div>
                 </div>
+
+                {/* Save Error */}
+                {errors.save && <p className="text-[11px] text-red-400 text-center py-2">{errors.save}</p>}
 
                 {/* Save Button */}
                 <div className="flex items-center justify-end gap-3 pt-4" style={{ borderTop: '1px solid var(--v-border)' }}>

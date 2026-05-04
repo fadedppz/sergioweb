@@ -17,39 +17,60 @@ interface Stats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStats();
   }, []);
 
   const fetchStats = async () => {
-    const supabase = createClient();
+    try {
+      const supabase = createClient();
 
-    // Fetch in parallel
-    const [ordersRes, customersRes, productsRes] = await Promise.all([
-      supabase.from('orders').select('*').order('created_at', { ascending: false }),
-      supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'customer'),
-      supabase.from('products').select('id, name, stock_qty').lt('stock_qty', 5).order('stock_qty', { ascending: true }),
-    ]);
+      // Fetch in parallel
+      const [ordersRes, customersRes, productsRes] = await Promise.all([
+        supabase.from('orders').select('*').order('created_at', { ascending: false }),
+        supabase.from('profiles').select('id', { count: 'exact' }).eq('role', 'customer'),
+        supabase.from('products').select('id, name, stock_qty').lt('stock_qty', 5).order('stock_qty', { ascending: true }),
+      ]);
 
-    const orders = ordersRes.data || [];
-    const today = new Date().toISOString().split('T')[0];
-    const totalRevenue = orders.reduce((sum: number, o: Record<string, unknown>) => sum + ((o.total as number) || 0), 0);
-    const ordersToday = orders.filter((o: Record<string, unknown>) => (o.created_at as string)?.startsWith(today)).length;
+      const orders = ordersRes.data || [];
+      const today = new Date().toISOString().split('T')[0];
+      const totalRevenue = orders.reduce((sum: number, o: Record<string, unknown>) => sum + ((o.total as number) || 0), 0);
+      const ordersToday = orders.filter((o: Record<string, unknown>) => (o.created_at as string)?.startsWith(today)).length;
 
-    setStats({
-      totalRevenue,
-      totalOrders: orders.length,
-      totalCustomers: customersRes.count || 0,
-      ordersToday,
-      recentOrders: orders.slice(0, 5),
-      lowStockProducts: (productsRes.data || []) as Array<{ id: string; name: string; stock_qty: number }>,
-    });
-    setLoading(false);
+      setStats({
+        totalRevenue,
+        totalOrders: orders.length,
+        totalCustomers: customersRes.count || 0,
+        ordersToday,
+        recentOrders: orders.slice(0, 5),
+        lowStockProducts: (productsRes.data || []) as Array<{ id: string; name: string; stock_qty: number }>,
+      });
+    } catch (err: any) {
+      console.error('Dashboard fetch error:', err);
+      setError(err.message || 'Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
     return <div className="flex items-center justify-center h-64 text-sm" style={{ color: 'var(--v-text-muted)' }}>Loading dashboard...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 gap-4">
+        <p className="text-sm" style={{ color: 'var(--v-text-muted)' }}>Could not load dashboard data.</p>
+        <p className="text-xs" style={{ color: 'var(--v-text-dim)' }}>{error}</p>
+        <button onClick={() => { setLoading(true); setError(null); fetchStats(); }}
+          className="px-4 py-2 text-xs font-semibold rounded-xl transition-all hover:scale-105"
+          style={{ backgroundColor: 'var(--v-bg-card)', color: 'var(--v-text)', border: '1px solid var(--v-border)' }}>
+          Retry
+        </button>
+      </div>
+    );
   }
 
   const statCards = [
