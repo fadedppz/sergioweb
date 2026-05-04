@@ -91,17 +91,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
         {/* Product Info (Patagonia style) */}
         <div className="flex flex-col flex-1 px-1">
-          {/* Swatches (simulated with random colors or product variants) */}
-          <div className="flex gap-1.5 mb-3">
-            <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#111', borderColor: 'var(--v-border)' }} />
-            <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#ccc', borderColor: 'var(--v-border)' }} />
-            {product.category === 'bikes' && (
-              <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#7B2FFF', borderColor: 'var(--v-border)' }} />
-            )}
-          </div>
-
           <Link href={productUrl} className="group-hover:opacity-80 transition-opacity">
-            <h3 className="text-base font-semibold mb-1" style={{ color: 'var(--v-text)' }}>
+            <h3 className="text-base font-semibold mb-1 mt-2" style={{ color: 'var(--v-text)' }}>
               {product.name}
             </h3>
           </Link>
@@ -112,6 +103,15 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               <Star key={star} className="w-3 h-3 fill-current" style={{ color: star === 5 ? 'var(--v-border)' : 'var(--v-text)' }} />
             ))}
             <span className="text-[10px] ml-1" style={{ color: 'var(--v-text-muted)' }}>(24)</span>
+          </div>
+
+          {/* Swatches (simulated with random colors or product variants) */}
+          <div className="flex gap-1.5 mb-3">
+            <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#111', borderColor: 'var(--v-border)' }} />
+            <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#ccc', borderColor: 'var(--v-border)' }} />
+            {product.category === 'bikes' && (
+              <div className="w-4 h-4 rounded-full border shadow-inner" style={{ backgroundColor: '#7B2FFF', borderColor: 'var(--v-border)' }} />
+            )}
           </div>
 
           <div className="mt-auto flex items-end justify-between pt-2">
