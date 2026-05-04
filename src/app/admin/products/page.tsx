@@ -9,13 +9,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface Product {
   id: string; slug: string; name: string; description: string; price: number; compare_price: number | null;
   stock_qty: number; category: string; is_featured: boolean; is_active: boolean; created_at: string;
-  images: string[]; specs: Record<string, string>;
+  image_urls: string[]; specs: Record<string, string>;
 }
 
 const emptyProduct: Omit<Product, 'id' | 'created_at'> = {
   slug: '', name: '', description: '', price: 0, compare_price: null,
   stock_qty: 0, category: 'bikes', is_featured: false, is_active: true,
-  images: [], specs: {},
+  image_urls: [], specs: {},
 };
 
 function generateSlug(name: string) {
@@ -84,7 +84,7 @@ export default function AdminProductsPage() {
       category: product.category,
       is_featured: product.is_featured,
       is_active: product.is_active,
-      images: product.images || [],
+      image_urls: product.image_urls || [],
       specs: product.specs || {},
     });
     setErrors({});
@@ -119,7 +119,7 @@ export default function AdminProductsPage() {
         category: form.category,
         is_featured: form.is_featured,
         is_active: form.is_active,
-        images: form.images,
+        image_urls: form.image_urls,
         specs: form.specs,
       };
 

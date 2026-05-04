@@ -65,7 +65,7 @@ export default function ProductDetailPage() {
           setRelated(relatedData.map((p: any) => ({
             id: p.id, slug: p.slug, name: p.name, description: p.description || '',
             price: p.price, compare_price: p.compare_price || null, category: p.category || 'bikes',
-            stock_qty: p.stock_qty ?? 0, images: p.images || [], specs: p.specs || {},
+            stock_qty: p.stock_qty ?? 0, images: p.image_urls || [], specs: p.specs || {},
             is_featured: p.is_featured ?? false, created_at: p.created_at || '',
           })));
         }

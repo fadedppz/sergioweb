@@ -41,7 +41,7 @@ export default function ShopPage() {
           compare_price: p.compare_price || null,
           category: p.category || 'bikes',
           stock_qty: p.stock_qty ?? 0,
-          images: p.images || [],
+          images: p.image_urls || [],
           specs: p.specs || {},
           is_featured: p.is_featured ?? false,
           created_at: p.created_at || '',
