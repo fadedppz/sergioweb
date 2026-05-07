@@ -81,14 +81,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase]);
 
   const signUp = useCallback(async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { full_name: fullName },
       },
     });
-    return { error: error?.message ?? null };
+
+    if (error) return { error: error.message };
+
+    // Supabase returns a fake user with no identities when the email is already taken
+    // (to prevent email enumeration). Detect this and show a user-friendly error.
+    if (data?.user?.identities?.length === 0) {
+      return { error: 'An account with this email already exists. Please sign in instead.' };
+    }
+
+    return { error: null };
   }, [supabase]);
 
   const signOut = useCallback(async () => {
