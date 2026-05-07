@@ -114,6 +114,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [supabase]);
 
   const resetPassword = useCallback(async (email: string) => {
+    // Set a cookie so the auth callback knows to redirect to /reset-password
+    // even if Supabase strips the ?next= query param from the redirect URL.
+    document.cookie = 'ee_reset=1; path=/; max-age=600; SameSite=Lax';
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
     });
